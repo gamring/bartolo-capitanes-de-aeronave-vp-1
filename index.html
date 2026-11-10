@@ -256,7 +256,9 @@
 
   <div id="modal-product" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white border border-slate-200 w-full max-w-md rounded-2xl p-5 shadow-2xl">
-      <h3 class="font-extrabold text-slate-800 text-base mb-3">Ingresar Nuevo Producto</h3>
+      <h3 class="font-extrabold text-slate-800 text-base mb-3" id="modal-product-title">Ingresar Nuevo Producto</h3>
+      <input type="hidden" id="edit-prod-id" value="">
+      
       <div class="space-y-3 text-xs">
         <div>
           <label class="block font-semibold text-slate-600 mb-1">Nombre del Producto:</label>
@@ -331,16 +333,27 @@
     }
 
     function syncActiveUser() {
-      if (activeUser) {
-        const found = DB.users.find(u => u.id === activeUser.id);
+      const savedUserId = localStorage.getItem('bartolo_active_user_id');
+      if (savedUserId) {
+        const found = DB.users.find(u => u.id === parseInt(savedUserId));
         if (found) {
           activeUser = found;
           document.getElementById('client-user-name').innerText = activeUser.name;
+          document.getElementById('client-user-badge').classList.remove('hidden');
+          document.getElementById('btn-select-user-text').innerText = 'Cambiar Usuario';
+          return;
         }
       }
+      activeUser = null;
+      document.getElementById('client-user-name').innerText = 'Sin Identificar';
+      document.getElementById('client-user-badge').classList.add('hidden');
+      document.getElementById('btn-select-user-text').innerText = 'Seleccionar Usuario';
     }
 
-    window.onload = function() { renderAll(); };
+    window.onload = function() {
+      syncActiveUser();
+      renderAll();
+    };
 
     function renderAll() {
       renderProducts();
@@ -388,13 +401,8 @@
     function closeSelectUserModal() { document.getElementById('modal-select-user').classList.add('hidden'); }
 
     function selectUser(id) {
-      const user = DB.users.find(u => u.id === id);
-      if (user) {
-        activeUser = user;
-        document.getElementById('client-user-name').innerText = user.name;
-        document.getElementById('client-user-badge').classList.remove('hidden');
-        document.getElementById('btn-select-user-text').innerText = 'Cambiar Usuario';
-      }
+      localStorage.setItem('bartolo_active_user_id', id);
+      syncActiveUser();
       closeSelectUserModal();
     }
 
@@ -411,8 +419,8 @@
       if (!name || pin.length !== 4) { alert('Ingresa tu nombre y un PIN de 4 dígitos.'); return; }
       const newUser = { id: Date.now(), name, pin, debt: 0 };
       DB.users.push(newUser);
+      localStorage.setItem('bartolo_active_user_id', newUser.id);
       saveDB();
-      selectUser(newUser.id);
       closeRegisterUserModal();
     }
 
@@ -558,11 +566,111 @@
       if (pinActionCallback) pinActionCallback(pin);
     };
 
-    function openProductModal() {
+    function openProductModal(productId = null) {
       tempImageBase64 = '';
-      document.getElementById('prod-name').value = '';
-      document.getElementById('prod-stock').value = '';
-      document.getElementById('prod-cost').value = '';
-      document.getElementById('prod-price').value = '';
-      document.getElementById('prod-image-url').value = '';
-      document.getElementById('prod-image
+      if (productId) {
+        const prod = DB.products.find(p => p.id === productId);
+        document.getElementById('modal-product-title').innerText = 'Editar Producto';
+        document.getElementById('edit-prod-id').value = prod.id;
+        document.getElementById('prod-name').value = prod.name;
+        document.getElementById('prod-stock').value = prod.stock;
+        document.getElementById('prod-cost').value = prod.cost;
+        document.getElementById('prod-price').value = prod.price;
+        document.getElementById('prod-image-url').value = prod.img.startsWith('http') || !prod.img.startsWith('data:') ? prod.img : '';
+        document.getElementById('prod-preview-box').innerHTML = prod.img.startsWith('data:') || prod.img.startsWith('http')
+          ? `<img src="${prod.img}" class="w-full h-full object-cover">`
+          : `<span class="text-2xl">${prod.img}</span>`;
+      } else {
+        document.getElementById('modal-product-title').innerText = 'Ingresar Nuevo Producto';
+        document.getElementById('edit-prod-id').value = '';
+        document.getElementById('prod-name').value = '';
+        document.getElementById('prod-stock').value = '';
+        document.getElementById('prod-cost').value = '';
+        document.getElementById('prod-price').value = '';
+        document.getElementById('prod-image-url').value = '';
+        document.getElementById('prod-image-file').value = '';
+        document.getElementById('prod-preview-box').innerHTML = '<i class="fa-solid fa-image text-slate-400"></i>';
+      }
+      document.getElementById('modal-product').classList.remove('hidden');
+    }
+
+    function closeProductModal() { document.getElementById('modal-product').classList.add('hidden'); }
+
+    function previewImageFile(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 150;
+            canvas.height = 150;
+            ctx.drawImage(img, 0, 0, 150, 150);
+            tempImageBase64 = canvas.toDataURL('image/jpeg', 0.75);
+            document.getElementById('prod-preview-box').innerHTML = `<img src="${tempImageBase64}" class="w-full h-full object-cover">`;
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function saveProduct() {
+      const editId = document.getElementById('edit-prod-id').value;
+      const name = document.getElementById('prod-name').value.trim();
+      const stock = parseInt(document.getElementById('prod-stock').value);
+      const cost = parseInt(document.getElementById('prod-cost').value);
+      const price = parseInt(document.getElementById('prod-price').value);
+      const url = document.getElementById('prod-image-url').value.trim();
+
+      if (!name || isNaN(stock) || isNaN(cost) || isNaN(price)) {
+        alert('Por favor, ingresa todos los datos obligatorios.');
+        return;
+      }
+
+      let img = tempImageBase64 || url;
+      if (!img && editId) {
+        const oldProd = DB.products.find(p => p.id === parseInt(editId));
+        if (oldProd) img = oldProd.img;
+      }
+      if (!img) img = '📦';
+
+      if (editId) {
+        const prod = DB.products.find(p => p.id === parseInt(editId));
+        if (prod) {
+          prod.name = name;
+          prod.stock = stock;
+          prod.cost = cost;
+          prod.price = price;
+          prod.img = img;
+        }
+      } else {
+        DB.products.push({ id: Date.now(), name, stock, cost, price, img });
+      }
+
+      saveDB();
+      closeProductModal();
+    }
+
+    function deleteProduct(id) {
+      if (confirm('¿Deseas eliminar este producto del inventario?')) {
+        DB.products = DB.products.filter(p => p.id !== id);
+        saveDB();
+      }
+    }
+
+    function resetUserPin(userId) {
+      const user = DB.users.find(u => u.id === userId);
+      const newPin = prompt(`Nuevo PIN de 4 dígitos para ${user.name}:`);
+      if (newPin && newPin.trim().length === 4) {
+        user.pin = newPin.trim();
+        saveDB();
+        alert(`El PIN de ${user.name} ha sido actualizado.`);
+      } else if (newPin !== null) alert('El PIN debe contener 4 dígitos.');
+    }
+
+    function changeAdminPin() {
+      const newPin = prompt('Nueva clave maestra de Administrador (4 dígitos):');
+      if (new
