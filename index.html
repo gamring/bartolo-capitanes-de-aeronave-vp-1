@@ -9,10 +9,6 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
     body { font-family: 'Inter', sans-serif; }
-    .glass-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-    }
   </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col">
@@ -48,7 +44,7 @@
       <!-- IZQUIERDA: USUARIO Y PRODUCTOS -->
       <div class="lg:col-span-2 space-y-6">
         
-        <!-- SELECCIÓN / REGISTRO DE USUARIO -->
+        <!-- SELECCIÓN DE USUARIO -->
         <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 md:p-5 shadow-xl">
           <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
             <i class="fa-solid fa-user-check text-amber-400"></i> 1. Identificación de Cliente
@@ -72,9 +68,7 @@
           <!-- INDICADOR DE USUARIO ACTIVO -->
           <div id="active-user-badge" class="hidden mt-3 p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl flex justify-between items-center">
             <div class="flex items-center gap-2">
-              <div class="w-8 h-8 rounded-full bg-amber-500 text-slate-900 font-bold flex items-center justify-center text-xs" id="active-user-avatar">
-                --
-              </div>
+              <div class="w-8 h-8 rounded-full bg-amber-500 text-slate-950 font-bold flex items-center justify-center text-xs" id="active-user-avatar">--</div>
               <div>
                 <p class="text-sm font-bold text-amber-300" id="active-user-name">Usuario Seleccionado</p>
                 <p class="text-xs text-slate-400">Deuda Acumulada: <span id="active-user-debt" class="font-bold text-red-400">$0</span></p>
@@ -94,13 +88,13 @@
           </div>
 
           <div id="products-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            <!-- Render dinámico de productos -->
+            <!-- Render dinámico -->
           </div>
         </div>
 
       </div>
 
-      <!-- DERECHA: CARRITO Y CONFIRMACIÓN DE COMPRA -->
+      <!-- DERECHA: CARRITO -->
       <div class="lg:col-span-1">
         <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 md:p-5 shadow-xl sticky top-20">
           <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -129,25 +123,24 @@
     <!-- VISTA ADMINISTRADOR -->
     <div id="view-admin" class="hidden lg:col-span-3 space-y-6">
       
-      <!-- RESUMEN FLUJO DE CAJA & KPIS -->
+      <!-- KPIS FLUJO DE CAJA -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        
         <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4">
           <p class="text-xs text-slate-400 uppercase font-semibold">Ventas del Mes</p>
           <p class="text-2xl font-black text-amber-400 mt-1" id="kpi-month-sales">$0</p>
-          <span class="text-[10px] text-slate-500">Monto total anotado este mes</span>
+          <span class="text-[10px] text-slate-500">Total anotado este mes</span>
         </div>
 
         <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4">
           <p class="text-xs text-slate-400 uppercase font-semibold">Abonos Recibidos (Mes)</p>
           <p class="text-2xl font-black text-emerald-400 mt-1" id="kpi-month-payments">$0</p>
-          <span class="text-[10px] text-slate-500">Efectivo/Transferencia ingresado</span>
+          <span class="text-[10px] text-slate-500">Recaudado en efectivo/transferencia</span>
         </div>
 
         <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4">
           <p class="text-xs text-slate-400 uppercase font-semibold">Flujo Neto del Mes</p>
           <p class="text-2xl font-black text-sky-400 mt-1" id="kpi-month-net">$0</p>
-          <span class="text-[10px] text-slate-500">Recaudación efectiva del período</span>
+          <span class="text-[10px] text-slate-500">Diferencia abonos vs ventas</span>
         </div>
 
         <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4">
@@ -155,17 +148,16 @@
           <p class="text-2xl font-black text-red-400 mt-1" id="kpi-total-debt">$0</p>
           <span class="text-[10px] text-slate-500">Por cobrar entre todos los clientes</span>
         </div>
-
       </div>
 
-      <!-- SECCIONES DE ADMINISTRACIÓN -->
+      <!-- SECCIONES DE GESTIÓN -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <!-- CONTROL DE INVENTARIO -->
+        <!-- 1. CONTROL DE INVENTARIO -->
         <div class="lg:col-span-2 bg-slate-800 border border-slate-700 rounded-2xl p-5">
           <div class="flex justify-between items-center mb-4">
             <h3 class="font-bold text-slate-200 text-base flex items-center gap-2">
-              <i class="fa-solid fa-boxes-stacked text-amber-400"></i> Gestor de Inventario & Stock
+              <i class="fa-solid fa-boxes-stacked text-amber-400"></i> Control de Inventario & Stock
             </h3>
             <button onclick="openProductModal()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1 transition">
               <i class="fa-solid fa-plus"></i> Nuevo Producto
@@ -184,36 +176,58 @@
                   <th class="p-3 text-right">Acciones</th>
                 </tr>
               </thead>
-              <tbody id="admin-inventory-table" class="divide-y divide-slate-700/50">
-                <!-- Productos dinámicos -->
-              </tbody>
+              <tbody id="admin-inventory-table" class="divide-y divide-slate-700/50"></tbody>
             </table>
           </div>
         </div>
 
-        <!-- CONTROL DE CLIENTES Y SALDOS -->
+        <!-- 2. CUENTAS Y SALDOS DE CLIENTES -->
         <div class="lg:col-span-1 bg-slate-800 border border-slate-700 rounded-2xl p-5">
           <div class="flex justify-between items-center mb-4">
             <h3 class="font-bold text-slate-200 text-base flex items-center gap-2">
-              <i class="fa-solid fa-users text-amber-400"></i> Cuentas de Clientes
+              <i class="fa-solid fa-users text-amber-400"></i> Cuentas y Saldos
             </h3>
-            <button onclick="exportToCSV()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-2.5 py-1 rounded-lg text-xs flex items-center gap-1 transition">
-              <i class="fa-solid fa-file-excel"></i> Exportar
-            </button>
+            <div class="flex gap-2">
+              <button onclick="changeAdminPin()" class="bg-slate-700 hover:bg-slate-600 text-amber-400 font-semibold px-2 py-1 rounded-lg text-[10px] flex items-center gap-1">
+                <i class="fa-solid fa-key"></i> Clave Admin
+              </button>
+              <button onclick="exportToCSV()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-2 py-1 rounded-lg text-[10px] flex items-center gap-1">
+                <i class="fa-solid fa-file-excel"></i> Excel
+              </button>
+            </div>
           </div>
 
-          <div id="admin-users-list" class="space-y-3 max-h-[420px] overflow-y-auto pr-1">
-            <!-- Usuarios dinámicos con botón de abono y liquidación -->
-          </div>
+          <div id="admin-users-list" class="space-y-3 max-h-[420px] overflow-y-auto pr-1"></div>
         </div>
 
+      </div>
+
+      <!-- 3. HISTORIAL DE TRANSACCIONES -->
+      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5">
+        <h3 class="font-bold text-slate-200 text-base mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-clock-rotate-left text-amber-400"></i> Historial de Transacciones (Compras y Abonos)
+        </h3>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-slate-900/60 text-slate-400 uppercase font-semibold">
+              <tr>
+                <th class="p-3">Fecha y Hora</th>
+                <th class="p-3">Tipo</th>
+                <th class="p-3">Cliente</th>
+                <th class="p-3">Monto</th>
+              </tr>
+            </thead>
+            <tbody id="admin-history-table" class="divide-y divide-slate-700/50"></tbody>
+          </table>
+        </div>
       </div>
 
     </div>
 
   </main>
 
-  <!-- MODAL INGRESO DE PIN -->
+  <!-- MODAL PIN -->
   <div id="modal-pin" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-slate-800 border border-slate-700 w-full max-w-xs rounded-2xl p-5 shadow-2xl text-center">
       <h3 class="font-bold text-slate-100 text-base mb-1" id="pin-modal-title">Confirmar PIN</h3>
@@ -246,377 +260,4 @@
       </div>
 
       <div class="grid grid-cols-2 gap-2 mt-5">
-        <button onclick="closeRegisterUserModal()" class="w-full bg-slate-700 text-slate-300 font-semibold py-2 rounded-xl text-xs">Cancelar</button>
-        <button onclick="saveNewUser()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2 rounded-xl text-xs">Guardar Perfil</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- LÓGICA JAVASCRIPT COMPLETA -->
-  <script>
-    // ESTADO DE LA APLICACIÓN Y PERSISTENCIA
-    let DB = {
-      adminPin: "1234",
-      products: JSON.parse(localStorage.getItem('bartolo_products')) || [
-        { id: 1, name: 'Chocolatina', stock: 25, cost: 500, price: 800, icon: 'fa-cookie-bite' },
-        { id: 2, name: 'Galletas de Agua', stock: 18, cost: 400, price: 700, icon: 'fa-box-open' },
-        { id: 3, name: 'Bebida 350ml', stock: 30, cost: 600, price: 1000, icon: 'fa-bottle-water' }
-      ],
-      users: JSON.parse(localStorage.getItem('bartolo_users')) || [
-        { id: 101, name: 'Capitán Ramírez', pin: '1111', debt: 0 },
-        { id: 102, name: 'Teniente Silva', pin: '2222', debt: 0 }
-      ],
-      transactions: JSON.parse(localStorage.getItem('bartolo_transactions')) || []
-    };
-
-    let activeUser = null;
-    let cart = [];
-    let isAdmin = false;
-    let pinActionCallback = null;
-
-    function saveDB() {
-      localStorage.setItem('bartolo_products', JSON.stringify(DB.products));
-      localStorage.setItem('bartolo_users', JSON.stringify(DB.users));
-      localStorage.setItem('bartolo_transactions', JSON.stringify(DB.transactions));
-      renderAll();
-    }
-
-    // INICIALIZACIÓN
-    window.onload = function() {
-      renderAll();
-    };
-
-    function renderAll() {
-      renderUserSelect();
-      renderProducts();
-      renderCart();
-      renderAdminTable();
-      renderAdminUsers();
-      renderKPIs();
-    }
-
-    // GESTIÓN DE USUARIOS
-    function renderUserSelect() {
-      const select = document.getElementById('select-user');
-      select.innerHTML = '<option value="">-- Elige tu Nombre --</option>';
-      DB.users.forEach(u => {
-        select.innerHTML += `<option value="${u.id}">${u.name}</option>`;
-      });
-    }
-
-    function onUserSelect() {
-      const id = parseInt(document.getElementById('select-user').value);
-      if (!id) return;
-      const user = DB.users.find(u => u.id === id);
-      if (user) {
-        activeUser = user;
-        document.getElementById('active-user-name').innerText = user.name;
-        document.getElementById('active-user-debt').innerText = `$${user.debt.toLocaleString()}`;
-        document.getElementById('active-user-avatar').innerText = user.name.substring(0, 2).toUpperCase();
-        document.getElementById('active-user-badge').classList.remove('hidden');
-      }
-    }
-
-    function clearActiveUser() {
-      activeUser = null;
-      document.getElementById('select-user').value = "";
-      document.getElementById('active-user-badge').classList.add('hidden');
-    }
-
-    function openRegisterUserModal() {
-      document.getElementById('modal-user').classList.remove('hidden');
-    }
-
-    function closeRegisterUserModal() {
-      document.getElementById('modal-user').classList.add('hidden');
-      document.getElementById('new-user-name').value = '';
-      document.getElementById('new-user-pin').value = '';
-    }
-
-    function saveNewUser() {
-      const name = document.getElementById('new-user-name').value.trim();
-      const pin = document.getElementById('new-user-pin').value.trim();
-
-      if (!name || pin.length !== 4) {
-        alert('Ingresa un nombre válido y un PIN de 4 dígitos.');
-        return;
-      }
-
-      const newUser = { id: Date.now(), name, pin, debt: 0 };
-      DB.users.push(newUser);
-      saveDB();
-      closeRegisterUserModal();
-      document.getElementById('select-user').value = newUser.id;
-      onUserSelect();
-    }
-
-    // CATALOGO & CARRITO
-    function renderProducts() {
-      const grid = document.getElementById('products-grid');
-      const query = document.getElementById('search-product').value.toLowerCase();
-      grid.innerHTML = '';
-
-      DB.products.filter(p => p.name.toLowerCase().includes(query)).forEach(p => {
-        grid.innerHTML += `
-          <div class="bg-slate-900 border border-slate-700/70 hover:border-amber-500/50 rounded-xl p-3 flex flex-col justify-between transition">
-            <div class="flex items-center gap-2 mb-2">
-              <i class="fa-solid ${p.icon || 'fa-box'} text-amber-400 text-lg"></i>
-              <h4 class="font-bold text-xs text-slate-200 line-clamp-1">${p.name}</h4>
-            </div>
-            <div class="flex justify-between items-end">
-              <div>
-                <p class="text-xs text-slate-400">Stock: <span class="font-bold ${p.stock < 5 ? 'text-red-400' : 'text-slate-200'}">${p.stock}</span></p>
-                <p class="text-sm font-extrabold text-amber-400">$${p.price.toLocaleString()}</p>
-              </div>
-              <button onclick="addToCart(${p.id})" ${p.stock <= 0 ? 'disabled' : ''} class="bg-amber-500/20 hover:bg-amber-500 text-amber-400 hover:text-slate-950 font-bold p-2 rounded-lg text-xs transition disabled:opacity-30">
-                <i class="fa-solid fa-plus"></i>
-              </button>
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    function addToCart(productId) {
-      const product = DB.products.find(p => p.id === productId);
-      const cartItem = cart.find(item => item.id === productId);
-
-      if (cartItem) {
-        if (cartItem.qty < product.stock) {
-          cartItem.qty++;
-        } else {
-          alert('No hay suficiente stock disponible.');
-        }
-      } else {
-        cart.push({ id: product.id, name: product.name, price: product.price, qty: 1 });
-      }
-      renderCart();
-    }
-
-    function renderCart() {
-      const container = document.getElementById('cart-items');
-      const totalEl = document.getElementById('cart-total');
-      if (cart.length === 0) {
-        container.innerHTML = '<p class="text-xs text-slate-500 text-center py-10">Tu carrito está vacío.</p>';
-        totalEl.innerText = '$0';
-        return;
-      }
-
-      let total = 0;
-      container.innerHTML = '';
-      cart.forEach((item, index) => {
-        const itemTotal = item.price * item.qty;
-        total += itemTotal;
-        container.innerHTML += `
-          <div class="flex justify-between items-center bg-slate-900 p-2.5 rounded-xl border border-slate-700/50">
-            <div>
-              <p class="text-xs font-bold text-slate-200">${item.name}</p>
-              <p class="text-[10px] text-slate-400">$${item.price} x ${item.qty}</p>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="text-xs font-extrabold text-amber-400">$${itemTotal.toLocaleString()}</span>
-              <button onclick="removeFromCart(${index})" class="text-slate-500 hover:text-red-400 text-xs"><i class="fa-solid fa-trash"></i></button>
-            </div>
-          </div>
-        `;
-      });
-
-      totalEl.innerText = `$${total.toLocaleString()}`;
-    }
-
-    function removeFromCart(index) {
-      cart.splice(index, 1);
-      renderCart();
-    }
-
-    // PROCESO DE PAGO / CHECKOUT
-    function requestCheckout() {
-      if (!activeUser) {
-        alert('Por favor, selecciona o registra tu usuario antes de continuar.');
-        return;
-      }
-      if (cart.length === 0) {
-        alert('Agrega al menos un producto al carrito.');
-        return;
-      }
-
-      openPinModal('Autorizar Compra', `Ingresa el PIN de ${activeUser.name}`, (pin) => {
-        if (pin === activeUser.pin) {
-          executeCheckout();
-        } else {
-          alert('PIN incorrecto. Reintenta.');
-        }
-      });
-    }
-
-    function executeCheckout() {
-      let total = 0;
-      cart.forEach(item => {
-        const prod = DB.products.find(p => p.id === item.id);
-        if (prod) prod.stock -= item.qty;
-        total += item.price * item.qty;
-      });
-
-      activeUser.debt += total;
-
-      DB.transactions.push({
-        id: Date.now(),
-        type: 'SALE',
-        userId: activeUser.id,
-        userName: activeUser.name,
-        amount: total,
-        date: new Date().toISOString()
-      });
-
-      cart = [];
-      saveDB();
-      alert('¡Compra registrada con éxito!');
-      closePinModal();
-    }
-
-    // MODAL PIN
-    function openPinModal(title, subtitle, callback) {
-      document.getElementById('pin-modal-title').innerText = title;
-      document.getElementById('pin-modal-subtitle').innerText = subtitle;
-      document.getElementById('input-pin').value = '';
-      document.getElementById('modal-pin').classList.remove('hidden');
-      pinActionCallback = callback;
-    }
-
-    function closePinModal() {
-      document.getElementById('modal-pin').classList.add('hidden');
-      pinActionCallback = null;
-    }
-
-    document.getElementById('btn-confirm-pin').onclick = function() {
-      const pin = document.getElementById('input-pin').value;
-      if (pinActionCallback) pinActionCallback(pin);
-    };
-
-    // VISTA Y FUNCIONES ADMINISTRATIVAS
-    function toggleAdminView() {
-      if (isAdmin) {
-        isAdmin = false;
-        document.getElementById('view-admin').classList.add('hidden');
-        document.getElementById('view-client').classList.remove('hidden');
-        document.getElementById('text-toggle-mode').innerText = 'Panel Admin';
-      } else {
-        openPinModal('Acceso Administrador', 'Ingresa la clave de administración (Por defecto: 1234)', (pin) => {
-          if (pin === DB.adminPin) {
-            isAdmin = true;
-            document.getElementById('view-client').classList.add('hidden');
-            document.getElementById('view-admin').classList.remove('hidden');
-            document.getElementById('text-toggle-mode').innerText = 'Volver a Autoatención';
-            closePinModal();
-          } else {
-            alert('Clave de administrador incorrecta.');
-          }
-        });
-      }
-    }
-
-    function renderAdminTable() {
-      const tbody = document.getElementById('admin-inventory-table');
-      tbody.innerHTML = '';
-      DB.products.forEach(p => {
-        const margin = p.price - p.cost;
-        tbody.innerHTML += `
-          <tr class="hover:bg-slate-700/30">
-            <td class="p-3 font-semibold text-slate-200">${p.name}</td>
-            <td class="p-3">${p.stock}</td>
-            <td class="p-3 text-slate-400">$${p.cost}</td>
-            <td class="p-3 font-bold text-amber-400">$${p.price}</td>
-            <td class="p-3 text-emerald-400 font-semibold">+$${margin}</td>
-            <td class="p-3 text-right">
-              <button onclick="deleteProduct(${p.id})" class="text-slate-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
-            </td>
-          </tr>
-        `;
-      });
-    }
-
-    function renderAdminUsers() {
-      const container = document.getElementById('admin-users-list');
-      container.innerHTML = '';
-      DB.users.forEach(u => {
-        container.innerHTML += `
-          <div class="bg-slate-900 border border-slate-700/60 p-3 rounded-xl flex justify-between items-center">
-            <div>
-              <p class="text-xs font-bold text-slate-200">${u.name}</p>
-              <p class="text-[11px] text-red-400 font-semibold">Deuda: $${u.debt.toLocaleString()}</p>
-            </div>
-            <div class="flex gap-1">
-              <button onclick="registerPayment(${u.id})" class="bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white px-2 py-1 rounded-lg text-[10px] font-bold transition">Abonar</button>
-              <button onclick="clearDebt(${u.id})" class="bg-sky-600/20 hover:bg-sky-600 text-sky-400 hover:text-white px-2 py-1 rounded-lg text-[10px] font-bold transition">Saldo $0</button>
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    function registerPayment(userId) {
-      const user = DB.users.find(u => u.id === userId);
-      const amount = prompt(`Ingrese el monto del abono para ${user.name}:`);
-      const val = parseInt(amount);
-      if (val && val > 0) {
-        user.debt = Math.max(0, user.debt - val);
-        DB.transactions.push({
-          id: Date.now(),
-          type: 'PAYMENT',
-          userId: user.id,
-          userName: user.name,
-          amount: val,
-          date: new Date().toISOString()
-        });
-        saveDB();
-      }
-    }
-
-    function clearDebt(userId) {
-      const user = DB.users.find(u => u.id === userId);
-      if (confirm(`¿Liquidar la deuda completa de ${user.name}?`)) {
-        user.debt = 0;
-        saveDB();
-      }
-    }
-
-    function renderKPIs() {
-      const now = new Date();
-      const currentMonth = now.getMonth();
-      const currentYear = now.getFullYear();
-
-      let monthSales = 0;
-      let monthPayments = 0;
-      let totalDebt = 0;
-
-      DB.transactions.forEach(t => {
-        const d = new Date(t.date);
-        if (d.getMonth() === currentMonth && d.getFullYear() === currentYear) {
-          if (t.type === 'SALE') monthSales += t.amount;
-          if (t.type === 'PAYMENT') monthPayments += t.amount;
-        }
-      });
-
-      DB.users.forEach(u => totalDebt += u.debt);
-
-      document.getElementById('kpi-month-sales').innerText = `$${monthSales.toLocaleString()}`;
-      document.getElementById('kpi-month-payments').innerText = `$${monthPayments.toLocaleString()}`;
-      document.getElementById('kpi-month-net').innerText = `$${(monthPayments - monthSales).toLocaleString()}`;
-      document.getElementById('kpi-total-debt').innerText = `$${totalDebt.toLocaleString()}`;
-    }
-
-    function exportToCSV() {
-      let csv = 'Usuario,Deuda Acumulada\n';
-      DB.users.forEach(u => {
-        csv += `"${u.name}",${u.debt}\n`;
-      });
-
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = `reporte_bartolo_capitanes_${new Date().toISOString().slice(0,10)}.csv`;
-      link.click();
-    }
-  </script>
-</body>
-</html>
+        <button onclick="
