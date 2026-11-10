@@ -1,1001 +1,622 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bartolo capitanes aeronaves Vp-1 - Autoatención</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Font Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-        /* Custom scrollbars */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 9999px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bartolo capitanes aeronaves Vp-1 - Autoatención</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+    }
+  </style>
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col">
 
-    <!-- Navbar Principal -->
-    <header class="bg-slate-900 text-white shadow-lg sticky top-0 z-30 border-b border-amber-500/30">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('kiosk')">
-                <div class="bg-amber-500/20 text-amber-400 p-2 rounded-xl backdrop-blur-md border border-amber-500/30">
-                    <i data-lucide="plane" class="w-6 h-6"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-lg leading-tight tracking-wide text-amber-400">Bartolo capitanes aeronaves Vp-1</h1>
-                    <p class="text-xs text-slate-400 flex items-center gap-1">
-                        <i data-lucide="shield" class="w-3 h-3 text-amber-500"></i> Punto de Autoatención y Confitería
-                    </p>
-                </div>
-            </div>
-
-            <!-- Navegación de Modos -->
-            <div class="flex items-center bg-slate-800/80 p-1 rounded-xl border border-slate-700">
-                <button id="nav-kiosk" onclick="switchTab('kiosk')" class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 bg-amber-500 text-slate-950 shadow">
-                    <i data-lucide="shopping-bag" class="w-4 h-4"></i>
-                    <span>Autoatención</span>
-                </button>
-                <button id="nav-admin" onclick="openAdminAuthModal()" class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-slate-300 hover:text-white transition-all duration-200">
-                    <i data-lucide="shield-check" class="w-4 h-4"></i>
-                    <span>Administración</span>
-                </button>
-            </div>
+  <!-- ENCABEZADO PRINCIPAL -->
+  <header class="bg-slate-800/90 border-b border-amber-500/30 sticky top-0 z-40 backdrop-blur">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-black text-xl">
+          <i class="fa-solid fa-plane"></i>
         </div>
-    </header>
+        <div>
+          <h1 class="text-lg font-bold text-slate-100 leading-tight">Bartolo capitanes aeronaves Vp-1</h1>
+          <p class="text-xs text-amber-400 font-medium">Sistema de Autoatención & Control de Stock</p>
+        </div>
+      </div>
 
-    <!-- Contenido Principal -->
-    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6">
+      <div class="flex items-center gap-2">
+        <button id="btn-toggle-mode" onclick="toggleAdminView()" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 border border-slate-600 text-slate-200 text-xs font-semibold rounded-lg flex items-center gap-2 transition">
+          <i class="fa-solid fa-user-gear"></i>
+          <span id="text-toggle-mode">Panel Admin</span>
+        </button>
+      </div>
+    </div>
+  </header>
 
-        <!-- ================= MÓDULO DE AUTOATENCIÓN ================= -->
-        <section id="tab-kiosk" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- VISTA CLIENTES / AUTOATENCIÓN -->
+    <div id="view-client" class="lg:col-span-3 grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- IZQUIERDA: USUARIO Y PRODUCTOS -->
+      <div class="lg:col-span-2 space-y-6">
+        
+        <!-- SELECCIÓN / REGISTRO DE USUARIO -->
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 md:p-5 shadow-xl">
+          <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-user-check text-amber-400"></i> 1. Identificación de Cliente
+          </h2>
+          
+          <div id="user-selection-box" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">Seleccionar Nombre:</label>
+              <select id="select-user" onchange="onUserSelect()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-slate-200 text-sm focus:outline-none focus:border-amber-500">
+                <option value="">-- Elige tu Nombre --</option>
+              </select>
+            </div>
             
-            <!-- Panel Izquierdo: Selección de Cliente y Productos -->
-            <div class="lg:col-span-8 flex flex-col gap-6">
-                
-                <!-- Card de Identificación de Cliente -->
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div class="flex items-center gap-3 w-full sm:w-auto">
-                        <div class="bg-indigo-100 text-indigo-700 p-3 rounded-full">
-                            <i data-lucide="user" class="w-6 h-6"></i>
-                        </div>
-                        <div class="flex-1">
-                            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Comprando como:</span>
-                            <div class="flex items-center gap-2">
-                                <h2 id="current-user-display" class="text-lg font-bold text-slate-800">Seleccionar Comprador...</h2>
-                                <span id="current-user-badge" class="hidden text-xs bg-emerald-100 text-emerald-800 font-semibold px-2.5 py-0.5 rounded-full">Identificado</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                        <button onclick="openUserSelectModal()" class="flex-1 sm:flex-initial bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold px-4 py-2.5 rounded-xl border border-indigo-200 text-sm flex items-center justify-center gap-2 transition-colors">
-                            <i data-lucide="users" class="w-4 h-4"></i>
-                            <span id="btn-select-user-label">Elegir / Crear Usuario</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Buscador y Filtro de Categorías -->
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <div class="relative flex-1">
-                        <i data-lucide="search" class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                        <input type="text" id="kiosk-search" oninput="renderKioskProducts()" placeholder="Buscar confitería, bebidas, snacks..." class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm text-sm">
-                    </div>
-                </div>
-
-                <!-- Grid de Productos -->
-                <div id="kiosk-products-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                    <!-- Dinámico por JS -->
-                </div>
+            <div class="flex items-end gap-2">
+              <button onclick="openRegisterUserModal()" class="w-full bg-slate-700 hover:bg-slate-600 border border-slate-600 text-slate-200 text-sm font-medium py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 transition">
+                <i class="fa-solid fa-user-plus text-amber-400"></i> Nuevo Usuario
+              </button>
             </div>
+          </div>
 
-            <!-- Panel Derecho: Carrito de Compras -->
-            <div class="lg:col-span-4">
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sticky top-20 flex flex-col h-[calc(100vh-7rem)] max-h-[700px]">
-                    <div class="flex items-center justify-between pb-4 border-b border-slate-100">
-                        <div class="flex items-center gap-2">
-                            <i data-lucide="shopping-cart" class="w-5 h-5 text-indigo-600"></i>
-                            <h3 class="font-bold text-slate-800">Canasta del Día</h3>
-                        </div>
-                        <button onclick="clearCart()" class="text-xs text-rose-600 hover:text-rose-800 font-medium">Vaciar</button>
-                    </div>
-
-                    <!-- Listado del Carrito -->
-                    <div id="cart-items" class="flex-1 overflow-y-auto py-3 space-y-3">
-                        <!-- Dinámico JS -->
-                    </div>
-
-                    <!-- Resumen del Carrito -->
-                    <div class="pt-4 border-t border-slate-100 space-y-3">
-                        <div class="flex justify-between items-center text-sm text-slate-500">
-                            <span>Total Items:</span>
-                            <span id="cart-count" class="font-semibold text-slate-700">0</span>
-                        </div>
-                        <div class="flex justify-between items-center text-base font-bold text-slate-800 pt-1">
-                            <span>Total a Cargar:</span>
-                            <span id="cart-total" class="text-xl text-indigo-600">$0</span>
-                        </div>
-
-                        <button onclick="checkoutModalOpen()" id="btn-checkout" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-                            <i data-lucide="check-circle" class="w-5 h-5"></i>
-                            <span>Confirmar Compra</span>
-                        </button>
-                    </div>
-                </div>
+          <!-- INDICADOR DE USUARIO ACTIVO -->
+          <div id="active-user-badge" class="hidden mt-3 p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl flex justify-between items-center">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-full bg-amber-500 text-slate-900 font-bold flex items-center justify-center text-xs" id="active-user-avatar">
+                --
+              </div>
+              <div>
+                <p class="text-sm font-bold text-amber-300" id="active-user-name">Usuario Seleccionado</p>
+                <p class="text-xs text-slate-400">Deuda Acumulada: <span id="active-user-debt" class="font-bold text-red-400">$0</span></p>
+              </div>
             </div>
-        </section>
-
-        <!-- ================= MÓDULO DE ADMINISTRACIÓN ================= -->
-        <section id="tab-admin" class="hidden space-y-6">
-            
-            <!-- Encabezado Admin -->
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                <div>
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="plane" class="w-5 h-5 text-amber-600"></i>
-                        <h2 class="text-xl font-bold text-slate-800">Panel de Control - Bartolo capitanes aeronaves Vp-1</h2>
-                    </div>
-                    <p class="text-slate-500 text-sm mt-0.5">Gestiona el inventario, costos, precios y realiza el cierre de cuentas mensuales.</p>
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="exportDataCSV()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-4 py-2.5 rounded-xl border border-slate-300 text-sm flex items-center gap-2 transition">
-                        <i data-lucide="download" class="w-4 h-4"></i>
-                        <span>Exportar Excel (.CSV)</span>
-                    </button>
-                    <button onclick="openProductModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2.5 rounded-xl text-sm flex items-center gap-2 transition shadow">
-                        <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                        <span>Nuevo Producto</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Sub-Tabs de Admin -->
-            <div class="flex gap-2 border-b border-slate-200 pb-2">
-                <button id="subtab-btn-stock" onclick="switchAdminSubtab('stock')" class="px-4 py-2 rounded-lg font-semibold text-sm bg-white text-indigo-700 shadow-sm border border-slate-200">
-                    Control de Inventario
-                </button>
-                <button id="subtab-btn-accounts" onclick="switchAdminSubtab('accounts')" class="px-4 py-2 rounded-lg font-semibold text-sm text-slate-600 hover:bg-white transition">
-                    Cuentas y Saldos de Clientes
-                </button>
-                <button id="subtab-btn-history" onclick="switchAdminSubtab('history')" class="px-4 py-2 rounded-lg font-semibold text-sm text-slate-600 hover:bg-white transition">
-                    Historial de Transacciones
-                </button>
-            </div>
-
-            <!-- SUB-TAB 1: INVENTARIO -->
-            <div id="subtab-stock" class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <div class="p-4 border-b border-slate-100 flex justify-between items-center">
-                    <input type="text" id="admin-search-product" oninput="renderAdminInventory()" placeholder="Filtrar inventario..." class="px-3 py-2 border rounded-lg text-sm w-64">
-                    <span id="admin-stock-stats" class="text-xs text-slate-500 font-medium"></span>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-slate-600">
-                        <thead class="bg-slate-50 text-slate-700 uppercase text-xs font-semibold border-b">
-                            <tr>
-                                <th class="p-4">Producto</th>
-                                <th class="p-4 text-center">Stock</th>
-                                <th class="p-4 text-right">Precio Costo</th>
-                                <th class="p-4 text-right">Precio Venta</th>
-                                <th class="p-4 text-right">Margen Uni.</th>
-                                <th class="p-4 text-center">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-inventory-table" class="divide-y divide-slate-100">
-                            <!-- JS Dinámico -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- SUB-TAB 2: CUENTAS Y SALDOS -->
-            <div id="subtab-accounts" class="hidden bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <div class="p-4 border-b border-slate-100">
-                    <h3 class="font-bold text-slate-800">Estado de Cuentas de Clientes</h3>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-slate-600">
-                        <thead class="bg-slate-50 text-slate-700 uppercase text-xs font-semibold border-b">
-                            <tr>
-                                <th class="p-4">Nombre Cliente</th>
-                                <th class="p-4 text-center">PIN</th>
-                                <th class="p-4 text-right">Saldo Deuda Acumulado</th>
-                                <th class="p-4 text-center">Acciones de Pago / Cierre</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-accounts-table" class="divide-y divide-slate-100">
-                            <!-- JS Dinámico -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- SUB-TAB 3: HISTORIAL -->
-            <div id="subtab-history" class="hidden bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden p-4">
-                <h3 class="font-bold text-slate-800 mb-3">Historial General de Compras y Abonos</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-slate-600">
-                        <thead class="bg-slate-50 text-slate-700 uppercase text-xs font-semibold border-b">
-                            <tr>
-                                <th class="p-3">Fecha / Hora</th>
-                                <th class="p-3">Cliente</th>
-                                <th class="p-3">Tipo</th>
-                                <th class="p-3">Detalle</th>
-                                <th class="p-3 text-right">Monto</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-history-table" class="divide-y divide-slate-100">
-                            <!-- JS Dinámico -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-        </section>
-
-    </main>
-
-    <!-- ================= MODALES ================= -->
-
-    <!-- Modal: Seleccionar / Crear Usuario -->
-    <div id="modal-select-user" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-5">
-            <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="text-lg font-bold text-slate-800">Seleccionar Comprador</h3>
-                <button onclick="closeModal('modal-select-user')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-
-            <!-- Lista de Usuarios Existentes -->
-            <div class="space-y-2">
-                <label class="text-xs font-semibold text-slate-500 uppercase">Clientes Registrados</label>
-                <div id="user-select-list" class="max-h-48 overflow-y-auto space-y-2 pr-1">
-                    <!-- Dinámico por JS -->
-                </div>
-            </div>
-
-            <div class="relative flex py-1 items-center">
-                <div class="flex-grow border-t border-slate-200"></div>
-                <span class="flex-shrink mx-3 text-xs text-slate-400 uppercase font-semibold">o Registra uno Nuevo</span>
-                <div class="flex-grow border-t border-slate-200"></div>
-            </div>
-
-            <!-- Formulario de Nuevo Usuario -->
-            <form id="form-new-user" onsubmit="handleCreateUser(event)" class="space-y-3">
-                <div>
-                    <label class="block text-xs font-medium text-slate-700 mb-1">Nombre Completo</label>
-                    <input type="text" id="new-user-name" required placeholder="Ej: Juan Pérez" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-700 mb-1">Crear PIN (4 Dígitos Numéricos)</label>
-                    <input type="password" id="new-user-pin" maxlength="4" pattern="\d{4}" required placeholder="****" class="w-full px-3 py-2 border rounded-xl text-sm text-center font-mono tracking-widest focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                </div>
-                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl text-sm transition">
-                    Crear y Seleccionar
-                </button>
-            </form>
+            <button onclick="clearActiveUser()" class="text-xs text-slate-400 hover:text-slate-200 underline">Cambiar</button>
+          </div>
         </div>
+
+        <!-- CATÁLOGO DE PRODUCTOS -->
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 md:p-5 shadow-xl">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-store text-amber-400"></i> 2. Catálogo de Productos
+            </h2>
+            <input type="text" id="search-product" oninput="renderProducts()" placeholder="Buscar producto..." class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1 text-xs text-slate-200 focus:outline-none focus:border-amber-500 w-40 sm:w-56">
+          </div>
+
+          <div id="products-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <!-- Render dinámico de productos -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- DERECHA: CARRITO Y CONFIRMACIÓN DE COMPRA -->
+      <div class="lg:col-span-1">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 md:p-5 shadow-xl sticky top-20">
+          <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-cart-shopping text-amber-400"></i> 3. Carrito de Compras
+          </h2>
+
+          <div id="cart-items" class="space-y-3 min-h-[160px] max-h-[320px] overflow-y-auto pr-1">
+            <p class="text-xs text-slate-500 text-center py-10">Tu carrito está vacío.</p>
+          </div>
+
+          <div class="border-t border-slate-700 pt-4 mt-4 space-y-3">
+            <div class="flex justify-between text-base font-bold text-slate-100">
+              <span>Total a Anotar:</span>
+              <span id="cart-total" class="text-amber-400">$0</span>
+            </div>
+
+            <button onclick="requestCheckout()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-check"></i> Autorizar y Guardar Compra
+            </button>
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <!-- Modal: Confirmar PIN Cliente para Compra -->
-    <div id="modal-checkout-pin" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center space-y-4">
-            <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto">
-                <i data-lucide="lock" class="w-6 h-6"></i>
-            </div>
-            <div>
-                <h3 class="text-lg font-bold text-slate-800">Autorizar Compra</h3>
-                <p class="text-sm text-slate-500 mt-1">Ingresa tu PIN de 4 dígitos para confirmar el cargo a tu cuenta.</p>
-            </div>
-            <div>
-                <input type="password" id="checkout-pin-input" maxlength="4" pattern="\d{4}" placeholder="****" class="w-32 mx-auto text-center font-mono text-2xl tracking-widest border-2 border-indigo-200 rounded-xl py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-            </div>
-            <div id="checkout-pin-error" class="text-xs text-rose-600 font-semibold hidden">PIN incorrecto. Inténtalo de nuevo.</div>
-            <div class="flex gap-2">
-                <button onclick="closeModal('modal-checkout-pin')" class="flex-1 border border-slate-200 text-slate-600 font-semibold py-2.5 rounded-xl text-sm hover:bg-slate-50">Cancelar</button>
-                <button onclick="processCheckout()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl text-sm transition shadow">Autorizar</button>
-            </div>
+    <!-- VISTA ADMINISTRADOR -->
+    <div id="view-admin" class="hidden lg:col-span-3 space-y-6">
+      
+      <!-- RESUMEN FLUJO DE CAJA & KPIS -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4">
+          <p class="text-xs text-slate-400 uppercase font-semibold">Ventas del Mes</p>
+          <p class="text-2xl font-black text-amber-400 mt-1" id="kpi-month-sales">$0</p>
+          <span class="text-[10px] text-slate-500">Monto total anotado este mes</span>
         </div>
+
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4">
+          <p class="text-xs text-slate-400 uppercase font-semibold">Abonos Recibidos (Mes)</p>
+          <p class="text-2xl font-black text-emerald-400 mt-1" id="kpi-month-payments">$0</p>
+          <span class="text-[10px] text-slate-500">Efectivo/Transferencia ingresado</span>
+        </div>
+
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4">
+          <p class="text-xs text-slate-400 uppercase font-semibold">Flujo Neto del Mes</p>
+          <p class="text-2xl font-black text-sky-400 mt-1" id="kpi-month-net">$0</p>
+          <span class="text-[10px] text-slate-500">Recaudación efectiva del período</span>
+        </div>
+
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4">
+          <p class="text-xs text-slate-400 uppercase font-semibold">Deuda Total Pendiente</p>
+          <p class="text-2xl font-black text-red-400 mt-1" id="kpi-total-debt">$0</p>
+          <span class="text-[10px] text-slate-500">Por cobrar entre todos los clientes</span>
+        </div>
+
+      </div>
+
+      <!-- SECCIONES DE ADMINISTRACIÓN -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- CONTROL DE INVENTARIO -->
+        <div class="lg:col-span-2 bg-slate-800 border border-slate-700 rounded-2xl p-5">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="font-bold text-slate-200 text-base flex items-center gap-2">
+              <i class="fa-solid fa-boxes-stacked text-amber-400"></i> Gestor de Inventario & Stock
+            </h3>
+            <button onclick="openProductModal()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1 transition">
+              <i class="fa-solid fa-plus"></i> Nuevo Producto
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-300">
+              <thead class="bg-slate-900/60 text-slate-400 uppercase font-semibold">
+                <tr>
+                  <th class="p-3">Producto</th>
+                  <th class="p-3">Stock</th>
+                  <th class="p-3">Costo</th>
+                  <th class="p-3">Venta</th>
+                  <th class="p-3">Margen</th>
+                  <th class="p-3 text-right">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="admin-inventory-table" class="divide-y divide-slate-700/50">
+                <!-- Productos dinámicos -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- CONTROL DE CLIENTES Y SALDOS -->
+        <div class="lg:col-span-1 bg-slate-800 border border-slate-700 rounded-2xl p-5">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="font-bold text-slate-200 text-base flex items-center gap-2">
+              <i class="fa-solid fa-users text-amber-400"></i> Cuentas de Clientes
+            </h3>
+            <button onclick="exportToCSV()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-2.5 py-1 rounded-lg text-xs flex items-center gap-1 transition">
+              <i class="fa-solid fa-file-excel"></i> Exportar
+            </button>
+          </div>
+
+          <div id="admin-users-list" class="space-y-3 max-h-[420px] overflow-y-auto pr-1">
+            <!-- Usuarios dinámicos con botón de abono y liquidación -->
+          </div>
+        </div>
+
+      </div>
+
     </div>
 
-    <!-- Modal: Login de Administrador -->
-    <div id="modal-admin-auth" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center space-y-4">
-            <div class="w-12 h-12 bg-slate-100 text-slate-700 rounded-full flex items-center justify-center mx-auto">
-                <i data-lucide="shield" class="w-6 h-6"></i>
-            </div>
-            <div>
-                <h3 class="text-lg font-bold text-slate-800">Acceso Administrador</h3>
-                <p class="text-xs text-slate-500 mt-1">Introduce el PIN de Administrador (Por defecto: 1234)</p>
-            </div>
-            <div>
-                <input type="password" id="admin-pin-input" maxlength="4" placeholder="****" class="w-32 mx-auto text-center font-mono text-2xl tracking-widest border-2 border-slate-200 rounded-xl py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-            </div>
-            <div id="admin-pin-error" class="text-xs text-rose-600 font-semibold hidden">PIN de administrador no válido.</div>
-            <div class="flex gap-2">
-                <button onclick="closeModal('modal-admin-auth')" class="flex-1 border border-slate-200 text-slate-600 font-semibold py-2 rounded-xl text-sm">Cancelar</button>
-                <button onclick="verifyAdminPin()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-xl text-sm transition">Ingresar</button>
-            </div>
-        </div>
+  </main>
+
+  <!-- MODAL INGRESO DE PIN -->
+  <div id="modal-pin" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-800 border border-slate-700 w-full max-w-xs rounded-2xl p-5 shadow-2xl text-center">
+      <h3 class="font-bold text-slate-100 text-base mb-1" id="pin-modal-title">Confirmar PIN</h3>
+      <p class="text-xs text-slate-400 mb-4" id="pin-modal-subtitle">Ingresa tu clave de 4 dígitos</p>
+
+      <input type="password" id="input-pin" maxlength="4" placeholder="••••" class="w-full text-center text-2xl font-bold bg-slate-900 border border-slate-700 text-amber-400 rounded-xl py-3 mb-4 tracking-widest focus:outline-none focus:border-amber-500">
+
+      <div class="grid grid-cols-2 gap-2">
+        <button onclick="closePinModal()" class="w-full bg-slate-700 hover:bg-slate-600 text-slate-300 font-semibold py-2 rounded-xl text-xs">Cancelar</button>
+        <button id="btn-confirm-pin" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2 rounded-xl text-xs">Confirmar</button>
+      </div>
     </div>
+  </div>
 
-    <!-- Modal: Crear/Editar Producto -->
-    <div id="modal-product-form" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-4">
-            <div class="flex justify-between items-center border-b pb-3">
-                <h3 id="product-modal-title" class="text-lg font-bold text-slate-800">Nuevo Producto</h3>
-                <button onclick="closeModal('modal-product-form')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            <form id="form-product" onsubmit="handleSaveProduct(event)" class="space-y-3">
-                <input type="hidden" id="product-id">
-                <div>
-                    <label class="block text-xs font-medium text-slate-700 mb-1">Nombre del Producto</label>
-                    <input type="text" id="prod-name" required placeholder="Ej: Chocolate 100g" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-medium text-slate-700 mb-1">Cantidad (Stock)</label>
-                        <input type="number" id="prod-stock" min="0" required placeholder="10" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-700 mb-1">Icono / Emoji</label>
-                        <input type="text" id="prod-icon" placeholder="🍫" class="w-full px-3 py-2 border rounded-xl text-sm text-center focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-medium text-slate-700 mb-1">Precio Costo ($)</label>
-                        <input type="number" id="prod-cost" min="0" step="1" required placeholder="500" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-700 mb-1">Precio Venta ($)</label>
-                        <input type="number" id="prod-price" min="0" step="1" required placeholder="800" class="w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                    </div>
-                </div>
-                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl text-sm transition mt-2">
-                    Guardar Producto
-                </button>
-            </form>
+  <!-- MODAL REGISTRO DE USUARIO -->
+  <div id="modal-user" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-800 border border-slate-700 w-full max-w-sm rounded-2xl p-5 shadow-2xl">
+      <h3 class="font-bold text-slate-100 text-base mb-3">Crear Usuario de Autoatención</h3>
+      
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Nombre Completo:</label>
+          <input type="text" id="new-user-name" placeholder="Ej: Juan Pérez" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-amber-500">
         </div>
-    </div>
 
-    <!-- Modal: Registrar Abono Parcial -->
-    <div id="modal-payment" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center space-y-4">
-            <h3 class="text-lg font-bold text-slate-800">Registrar Abono</h3>
-            <p id="payment-user-name" class="text-sm text-slate-600 font-semibold"></p>
-            <input type="hidden" id="payment-user-id">
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">PIN de Seguridad (4 dígitos):</label>
+          <input type="password" id="new-user-pin" maxlength="4" placeholder="Ej: 1234" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-amber-400 tracking-widest focus:outline-none focus:border-amber-500">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 mt-5">
+        <button onclick="closeRegisterUserModal()" class="w-full bg-slate-700 text-slate-300 font-semibold py-2 rounded-xl text-xs">Cancelar</button>
+        <button onclick="saveNewUser()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2 rounded-xl text-xs">Guardar Perfil</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LÓGICA JAVASCRIPT COMPLETA -->
+  <script>
+    // ESTADO DE LA APLICACIÓN Y PERSISTENCIA
+    let DB = {
+      adminPin: "1234",
+      products: JSON.parse(localStorage.getItem('bartolo_products')) || [
+        { id: 1, name: 'Chocolatina', stock: 25, cost: 500, price: 800, icon: 'fa-cookie-bite' },
+        { id: 2, name: 'Galletas de Agua', stock: 18, cost: 400, price: 700, icon: 'fa-box-open' },
+        { id: 3, name: 'Bebida 350ml', stock: 30, cost: 600, price: 1000, icon: 'fa-bottle-water' }
+      ],
+      users: JSON.parse(localStorage.getItem('bartolo_users')) || [
+        { id: 101, name: 'Capitán Ramírez', pin: '1111', debt: 0 },
+        { id: 102, name: 'Teniente Silva', pin: '2222', debt: 0 }
+      ],
+      transactions: JSON.parse(localStorage.getItem('bartolo_transactions')) || []
+    };
+
+    let activeUser = null;
+    let cart = [];
+    let isAdmin = false;
+    let pinActionCallback = null;
+
+    function saveDB() {
+      localStorage.setItem('bartolo_products', JSON.stringify(DB.products));
+      localStorage.setItem('bartolo_users', JSON.stringify(DB.users));
+      localStorage.setItem('bartolo_transactions', JSON.stringify(DB.transactions));
+      renderAll();
+    }
+
+    // INICIALIZACIÓN
+    window.onload = function() {
+      renderAll();
+    };
+
+    function renderAll() {
+      renderUserSelect();
+      renderProducts();
+      renderCart();
+      renderAdminTable();
+      renderAdminUsers();
+      renderKPIs();
+    }
+
+    // GESTIÓN DE USUARIOS
+    function renderUserSelect() {
+      const select = document.getElementById('select-user');
+      select.innerHTML = '<option value="">-- Elige tu Nombre --</option>';
+      DB.users.forEach(u => {
+        select.innerHTML += `<option value="${u.id}">${u.name}</option>`;
+      });
+    }
+
+    function onUserSelect() {
+      const id = parseInt(document.getElementById('select-user').value);
+      if (!id) return;
+      const user = DB.users.find(u => u.id === id);
+      if (user) {
+        activeUser = user;
+        document.getElementById('active-user-name').innerText = user.name;
+        document.getElementById('active-user-debt').innerText = `$${user.debt.toLocaleString()}`;
+        document.getElementById('active-user-avatar').innerText = user.name.substring(0, 2).toUpperCase();
+        document.getElementById('active-user-badge').classList.remove('hidden');
+      }
+    }
+
+    function clearActiveUser() {
+      activeUser = null;
+      document.getElementById('select-user').value = "";
+      document.getElementById('active-user-badge').classList.add('hidden');
+    }
+
+    function openRegisterUserModal() {
+      document.getElementById('modal-user').classList.remove('hidden');
+    }
+
+    function closeRegisterUserModal() {
+      document.getElementById('modal-user').classList.add('hidden');
+      document.getElementById('new-user-name').value = '';
+      document.getElementById('new-user-pin').value = '';
+    }
+
+    function saveNewUser() {
+      const name = document.getElementById('new-user-name').value.trim();
+      const pin = document.getElementById('new-user-pin').value.trim();
+
+      if (!name || pin.length !== 4) {
+        alert('Ingresa un nombre válido y un PIN de 4 dígitos.');
+        return;
+      }
+
+      const newUser = { id: Date.now(), name, pin, debt: 0 };
+      DB.users.push(newUser);
+      saveDB();
+      closeRegisterUserModal();
+      document.getElementById('select-user').value = newUser.id;
+      onUserSelect();
+    }
+
+    // CATALOGO & CARRITO
+    function renderProducts() {
+      const grid = document.getElementById('products-grid');
+      const query = document.getElementById('search-product').value.toLowerCase();
+      grid.innerHTML = '';
+
+      DB.products.filter(p => p.name.toLowerCase().includes(query)).forEach(p => {
+        grid.innerHTML += `
+          <div class="bg-slate-900 border border-slate-700/70 hover:border-amber-500/50 rounded-xl p-3 flex flex-col justify-between transition">
+            <div class="flex items-center gap-2 mb-2">
+              <i class="fa-solid ${p.icon || 'fa-box'} text-amber-400 text-lg"></i>
+              <h4 class="font-bold text-xs text-slate-200 line-clamp-1">${p.name}</h4>
+            </div>
+            <div class="flex justify-between items-end">
+              <div>
+                <p class="text-xs text-slate-400">Stock: <span class="font-bold ${p.stock < 5 ? 'text-red-400' : 'text-slate-200'}">${p.stock}</span></p>
+                <p class="text-sm font-extrabold text-amber-400">$${p.price.toLocaleString()}</p>
+              </div>
+              <button onclick="addToCart(${p.id})" ${p.stock <= 0 ? 'disabled' : ''} class="bg-amber-500/20 hover:bg-amber-500 text-amber-400 hover:text-slate-950 font-bold p-2 rounded-lg text-xs transition disabled:opacity-30">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function addToCart(productId) {
+      const product = DB.products.find(p => p.id === productId);
+      const cartItem = cart.find(item => item.id === productId);
+
+      if (cartItem) {
+        if (cartItem.qty < product.stock) {
+          cartItem.qty++;
+        } else {
+          alert('No hay suficiente stock disponible.');
+        }
+      } else {
+        cart.push({ id: product.id, name: product.name, price: product.price, qty: 1 });
+      }
+      renderCart();
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cart-items');
+      const totalEl = document.getElementById('cart-total');
+      if (cart.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-500 text-center py-10">Tu carrito está vacío.</p>';
+        totalEl.innerText = '$0';
+        return;
+      }
+
+      let total = 0;
+      container.innerHTML = '';
+      cart.forEach((item, index) => {
+        const itemTotal = item.price * item.qty;
+        total += itemTotal;
+        container.innerHTML += `
+          <div class="flex justify-between items-center bg-slate-900 p-2.5 rounded-xl border border-slate-700/50">
             <div>
-                <label class="block text-xs text-slate-500 mb-1">Monto del Abono ($)</label>
-                <input type="number" id="payment-amount" min="1" placeholder="Ej: 2000" class="w-full text-center text-xl font-bold border-2 border-emerald-200 rounded-xl py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+              <p class="text-xs font-bold text-slate-200">${item.name}</p>
+              <p class="text-[10px] text-slate-400">$${item.price} x ${item.qty}</p>
             </div>
-            <div class="flex gap-2">
-                <button onclick="closeModal('modal-payment')" class="flex-1 border border-slate-200 text-slate-600 font-semibold py-2 rounded-xl text-sm">Cancelar</button>
-                <button onclick="processAbono()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 rounded-xl text-sm transition">Aplicar Abono</button>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-extrabold text-amber-400">$${itemTotal.toLocaleString()}</span>
+              <button onclick="removeFromCart(${index})" class="text-slate-500 hover:text-red-400 text-xs"><i class="fa-solid fa-trash"></i></button>
             </div>
-        </div>
-    </div>
+          </div>
+        `;
+      });
 
-    <!-- SCRIPT DE LÓGICA DE LA APLICACIÓN -->
-    <script>
-        // ================= ESTADO GLOBAL Y LOCALSTORAGE =================
-        let db = {
-            adminPin: '1234',
-            products: [],
-            users: [],
-            history: []
-        };
+      totalEl.innerText = `$${total.toLocaleString()}`;
+    }
 
-        let currentSelectedUser = null;
-        let cart = [];
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      renderCart();
+    }
 
-        // Inicialización al cargar la página
-        window.onload = function () {
-            loadState();
-            if (db.products.length === 0) {
-                seedInitialData();
-            }
-            renderKioskProducts();
-            updateCurrentUserUI();
-            lucide.createIcons();
-        };
+    // PROCESO DE PAGO / CHECKOUT
+    function requestCheckout() {
+      if (!activeUser) {
+        alert('Por favor, selecciona o registra tu usuario antes de continuar.');
+        return;
+      }
+      if (cart.length === 0) {
+        alert('Agrega al menos un producto al carrito.');
+        return;
+      }
 
-        function saveState() {
-            localStorage.setItem('confiteria_db', JSON.stringify(db));
+      openPinModal('Autorizar Compra', `Ingresa el PIN de ${activeUser.name}`, (pin) => {
+        if (pin === activeUser.pin) {
+          executeCheckout();
+        } else {
+          alert('PIN incorrecto. Reintenta.');
         }
+      });
+    }
 
-        function loadState() {
-            const data = localStorage.getItem('confiteria_db');
-            if (data) {
-                try {
-                    db = JSON.parse(data);
-                } catch (e) {
-                    console.error("Error al cargar localStorage", e);
-                }
-            }
+    function executeCheckout() {
+      let total = 0;
+      cart.forEach(item => {
+        const prod = DB.products.find(p => p.id === item.id);
+        if (prod) prod.stock -= item.qty;
+        total += item.price * item.qty;
+      });
+
+      activeUser.debt += total;
+
+      DB.transactions.push({
+        id: Date.now(),
+        type: 'SALE',
+        userId: activeUser.id,
+        userName: activeUser.name,
+        amount: total,
+        date: new Date().toISOString()
+      });
+
+      cart = [];
+      saveDB();
+      alert('¡Compra registrada con éxito!');
+      closePinModal();
+    }
+
+    // MODAL PIN
+    function openPinModal(title, subtitle, callback) {
+      document.getElementById('pin-modal-title').innerText = title;
+      document.getElementById('pin-modal-subtitle').innerText = subtitle;
+      document.getElementById('input-pin').value = '';
+      document.getElementById('modal-pin').classList.remove('hidden');
+      pinActionCallback = callback;
+    }
+
+    function closePinModal() {
+      document.getElementById('modal-pin').classList.add('hidden');
+      pinActionCallback = null;
+    }
+
+    document.getElementById('btn-confirm-pin').onclick = function() {
+      const pin = document.getElementById('input-pin').value;
+      if (pinActionCallback) pinActionCallback(pin);
+    };
+
+    // VISTA Y FUNCIONES ADMINISTRATIVAS
+    function toggleAdminView() {
+      if (isAdmin) {
+        isAdmin = false;
+        document.getElementById('view-admin').classList.add('hidden');
+        document.getElementById('view-client').classList.remove('hidden');
+        document.getElementById('text-toggle-mode').innerText = 'Panel Admin';
+      } else {
+        openPinModal('Acceso Administrador', 'Ingresa la clave de administración (Por defecto: 1234)', (pin) => {
+          if (pin === DB.adminPin) {
+            isAdmin = true;
+            document.getElementById('view-client').classList.add('hidden');
+            document.getElementById('view-admin').classList.remove('hidden');
+            document.getElementById('text-toggle-mode').innerText = 'Volver a Autoatención';
+            closePinModal();
+          } else {
+            alert('Clave de administrador incorrecta.');
+          }
+        });
+      }
+    }
+
+    function renderAdminTable() {
+      const tbody = document.getElementById('admin-inventory-table');
+      tbody.innerHTML = '';
+      DB.products.forEach(p => {
+        const margin = p.price - p.cost;
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-700/30">
+            <td class="p-3 font-semibold text-slate-200">${p.name}</td>
+            <td class="p-3">${p.stock}</td>
+            <td class="p-3 text-slate-400">$${p.cost}</td>
+            <td class="p-3 font-bold text-amber-400">$${p.price}</td>
+            <td class="p-3 text-emerald-400 font-semibold">+$${margin}</td>
+            <td class="p-3 text-right">
+              <button onclick="deleteProduct(${p.id})" class="text-slate-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function renderAdminUsers() {
+      const container = document.getElementById('admin-users-list');
+      container.innerHTML = '';
+      DB.users.forEach(u => {
+        container.innerHTML += `
+          <div class="bg-slate-900 border border-slate-700/60 p-3 rounded-xl flex justify-between items-center">
+            <div>
+              <p class="text-xs font-bold text-slate-200">${u.name}</p>
+              <p class="text-[11px] text-red-400 font-semibold">Deuda: $${u.debt.toLocaleString()}</p>
+            </div>
+            <div class="flex gap-1">
+              <button onclick="registerPayment(${u.id})" class="bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white px-2 py-1 rounded-lg text-[10px] font-bold transition">Abonar</button>
+              <button onclick="clearDebt(${u.id})" class="bg-sky-600/20 hover:bg-sky-600 text-sky-400 hover:text-white px-2 py-1 rounded-lg text-[10px] font-bold transition">Saldo $0</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function registerPayment(userId) {
+      const user = DB.users.find(u => u.id === userId);
+      const amount = prompt(`Ingrese el monto del abono para ${user.name}:`);
+      const val = parseInt(amount);
+      if (val && val > 0) {
+        user.debt = Math.max(0, user.debt - val);
+        DB.transactions.push({
+          id: Date.now(),
+          type: 'PAYMENT',
+          userId: user.id,
+          userName: user.name,
+          amount: val,
+          date: new Date().toISOString()
+        });
+        saveDB();
+      }
+    }
+
+    function clearDebt(userId) {
+      const user = DB.users.find(u => u.id === userId);
+      if (confirm(`¿Liquidar la deuda completa de ${user.name}?`)) {
+        user.debt = 0;
+        saveDB();
+      }
+    }
+
+    function renderKPIs() {
+      const now = new Date();
+      const currentMonth = now.getMonth();
+      const currentYear = now.getFullYear();
+
+      let monthSales = 0;
+      let monthPayments = 0;
+      let totalDebt = 0;
+
+      DB.transactions.forEach(t => {
+        const d = new Date(t.date);
+        if (d.getMonth() === currentMonth && d.getFullYear() === currentYear) {
+          if (t.type === 'SALE') monthSales += t.amount;
+          if (t.type === 'PAYMENT') monthPayments += t.amount;
         }
-
-        // Datos iniciales de demostración
-        function seedInitialData() {
-            db.products = [
-                { id: '1', name: 'Café de Capitanes Espresso', stock: 30, cost: 400, price: 800, icon: '☕' },
-                { id: '2', name: 'Chocolatina Alfajor Vp-1', stock: 25, cost: 400, price: 700, icon: '🍫' },
-                { id: '3', name: 'Galletas de Chocovainilla', stock: 18, cost: 300, price: 600, icon: '🍪' },
-                { id: '4', name: 'Gaseosa Mini 250ml', stock: 12, cost: 500, price: 900, icon: '🥤' },
-                { id: '5', name: 'Papas Fritas Snacks 50g', stock: 20, cost: 600, price: 1100, icon: '🍟' },
-                { id: '6', name: 'Barras Proteicas Vuelo', stock: 15, cost: 700, price: 1300, icon: '⚡' }
-            ];
-
-            db.users = [
-                { id: 'u1', name: 'Capitán Bartolo', pin: '1111', balance: 0 },
-                { id: 'u2', name: 'Oficial de Vuelo', pin: '2222', balance: 0 }
-            ];
-
-            saveState();
-        }
-
-        // ================= CAMBIO DE NAVEGACIÓN Y VISTAS =================
-        function switchTab(tab) {
-            const kioskSection = document.getElementById('tab-kiosk');
-            const adminSection = document.getElementById('tab-admin');
-            const navKiosk = document.getElementById('nav-kiosk');
-            const navAdmin = document.getElementById('nav-admin');
-
-            if (tab === 'kiosk') {
-                kioskSection.classList.remove('hidden');
-                adminSection.classList.add('hidden');
-
-                navKiosk.className = "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 bg-white text-indigo-900 shadow";
-                navAdmin.className = "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-indigo-200 hover:text-white transition-all duration-200";
-            } else {
-                kioskSection.classList.add('hidden');
-                adminSection.classList.remove('hidden');
-
-                navAdmin.className = "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 bg-white text-indigo-900 shadow";
-                navKiosk.className = "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-indigo-200 hover:text-white transition-all duration-200";
-                
-                renderAdminInventory();
-                renderAdminAccounts();
-                renderAdminHistory();
-            }
-        }
-
-        function openAdminAuthModal() {
-            document.getElementById('admin-pin-input').value = '';
-            document.getElementById('admin-pin-error').classList.add('hidden');
-            openModal('modal-admin-auth');
-        }
-
-        function verifyAdminPin() {
-            const inputPin = document.getElementById('admin-pin-input').value;
-            if (inputPin === db.adminPin) {
-                closeModal('modal-admin-auth');
-                switchTab('admin');
-            } else {
-                document.getElementById('admin-pin-error').classList.remove('hidden');
-            }
-        }
-
-        function switchAdminSubtab(sub) {
-            ['stock', 'accounts', 'history'].forEach(s => {
-                document.getElementById(`subtab-${s}`).classList.add('hidden');
-                document.getElementById(`subtab-btn-${s}`).className = "px-4 py-2 rounded-lg font-semibold text-sm text-slate-600 hover:bg-white transition";
-            });
-
-            document.getElementById(`subtab-${sub}`).classList.remove('hidden');
-            document.getElementById(`subtab-btn-${sub}`).className = "px-4 py-2 rounded-lg font-semibold text-sm bg-white text-indigo-700 shadow-sm border border-slate-200";
-        }
-
-        // ================= LÓGICA AUTOATENCIÓN (KIOSK) =================
-
-        function renderKioskProducts() {
-            const grid = document.getElementById('kiosk-products-grid');
-            const search = document.getElementById('kiosk-search').value.toLowerCase();
-            grid.innerHTML = '';
-
-            const filtered = db.products.filter(p => p.name.toLowerCase().includes(search));
-
-            if (filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-full py-10 text-center text-slate-400">No se encontraron productos en stock.</div>`;
-                return;
-            }
-
-            filtered.forEach(p => {
-                const isOutOfStock = p.stock <= 0;
-                const card = document.createElement('div');
-                card.className = `bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-col justify-between transition hover:shadow-md ${isOutOfStock ? 'opacity-50' : ''}`;
-                card.innerHTML = `
-                    <div class="text-center py-2">
-                        <div class="text-4xl mb-2">${p.icon || '📦'}</div>
-                        <h4 class="font-bold text-slate-800 text-sm line-clamp-2">${p.name}</h4>
-                        <p class="text-xs text-slate-400 mt-1">Stock: <span class="font-semibold ${p.stock < 5 ? 'text-amber-600' : 'text-slate-600'}">${p.stock}</span></p>
-                    </div>
-                    <div class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
-                        <span class="font-extrabold text-indigo-600 text-base">$${p.price.toLocaleString('es-CL')}</span>
-                        <button onclick="addToCart('${p.id}')" ${isOutOfStock ? 'disabled' : ''} class="bg-indigo-600 hover:bg-indigo-700 text-white p-2 rounded-xl text-xs font-semibold flex items-center gap-1 shadow transition disabled:opacity-50">
-                            <i data-lucide="plus" class="w-4 h-4"></i>
-                        </button>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-            lucide.createIcons();
-        }
-
-        function addToCart(productId) {
-            const product = db.products.find(p => p.id === productId);
-            if (!product || product.stock <= 0) return;
-
-            const existingItem = cart.find(item => item.productId === productId);
-            if (existingItem) {
-                if (existingItem.qty < product.stock) {
-                    existingItem.qty += 1;
-                } else {
-                    alert(`No hay más stock disponible de ${product.name}`);
-                }
-            } else {
-                cart.push({ productId, qty: 1 });
-            }
-            renderCart();
-        }
-
-        function updateCartQty(productId, delta) {
-            const itemIndex = cart.findIndex(i => i.productId === productId);
-            if (itemIndex > -1) {
-                const product = db.products.find(p => p.id === productId);
-                const newQty = cart[itemIndex].qty + delta;
-
-                if (newQty > product.stock) {
-                    alert(`Solo hay ${product.stock} unidades en stock.`);
-                    return;
-                }
-
-                if (newQty <= 0) {
-                    cart.splice(itemIndex, 1);
-                } else {
-                    cart[itemIndex].qty = newQty;
-                }
-            }
-            renderCart();
-        }
-
-        function clearCart() {
-            cart = [];
-            renderCart();
-        }
-
-        function renderCart() {
-            const container = document.getElementById('cart-items');
-            const countEl = document.getElementById('cart-count');
-            const totalEl = document.getElementById('cart-total');
-            container.innerHTML = '';
-
-            let total = 0;
-            let totalCount = 0;
-
-            if (cart.length === 0) {
-                container.innerHTML = `<div class="text-center py-10 text-slate-400 text-sm">Tu canasta está vacía.</div>`;
-            } else {
-                cart.forEach(item => {
-                    const prod = db.products.find(p => p.id === item.productId);
-                    if (prod) {
-                        const subtotal = prod.price * item.qty;
-                        total += subtotal;
-                        totalCount += item.qty;
-
-                        const row = document.createElement('div');
-                        row.className = "flex items-center justify-between bg-slate-50 p-2.5 rounded-xl border border-slate-100";
-                        row.innerHTML = `
-                            <div class="flex-1 pr-2">
-                                <div class="font-semibold text-xs text-slate-800">${prod.name}</div>
-                                <div class="text-xs text-indigo-600 font-bold">$${prod.price.toLocaleString('es-CL')}</div>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <button onclick="updateCartQty('${prod.id}', -1)" class="w-6 h-6 bg-white border border-slate-200 rounded-lg text-slate-600 flex items-center justify-center font-bold text-xs">-</button>
-                                <span class="text-xs font-bold text-slate-700 w-4 text-center">${item.qty}</span>
-                                <button onclick="updateCartQty('${prod.id}', 1)" class="w-6 h-6 bg-white border border-slate-200 rounded-lg text-slate-600 flex items-center justify-center font-bold text-xs">+</button>
-                            </div>
-                        `;
-                        container.appendChild(row);
-                    }
-                });
-            }
-
-            countEl.textContent = totalCount;
-            totalEl.textContent = `$${total.toLocaleString('es-CL')}`;
-        }
-
-        // ================= GESTIÓN DE USUARIOS / COMPRADORES =================
-
-        function openUserSelectModal() {
-            renderUserSelectList();
-            openModal('modal-select-user');
-        }
-
-        function renderUserSelectList() {
-            const container = document.getElementById('user-select-list');
-            container.innerHTML = '';
-
-            if (db.users.length === 0) {
-                container.innerHTML = `<div class="text-xs text-slate-400 text-center py-2">Sin usuarios registrados.</div>`;
-                return;
-            }
-
-            db.users.forEach(u => {
-                const div = document.createElement('div');
-                div.className = "flex justify-between items-center bg-slate-50 hover:bg-indigo-50 p-3 rounded-xl border border-slate-200 cursor-pointer transition";
-                div.onclick = () => selectUser(u.id);
-                div.innerHTML = `
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="user-check" class="w-4 h-4 text-indigo-600"></i>
-                        <span class="font-semibold text-sm text-slate-700">${u.name}</span>
-                    </div>
-                    <span class="text-xs text-slate-400 font-medium">Deuda: $${u.balance.toLocaleString('es-CL')}</span>
-                `;
-                container.appendChild(div);
-            });
-            lucide.createIcons();
-        }
-
-        function selectUser(userId) {
-            currentSelectedUser = db.users.find(u => u.id === userId);
-            updateCurrentUserUI();
-            closeModal('modal-select-user');
-        }
-
-        function updateCurrentUserUI() {
-            const nameDisplay = document.getElementById('current-user-display');
-            const badge = document.getElementById('current-user-badge');
-            const btnLabel = document.getElementById('btn-select-user-label');
-
-            if (currentSelectedUser) {
-                nameDisplay.textContent = currentSelectedUser.name;
-                badge.classList.remove('hidden');
-                btnLabel.textContent = "Cambiar Usuario";
-            } else {
-                nameDisplay.textContent = "Seleccionar Comprador...";
-                badge.classList.add('hidden');
-                btnLabel.textContent = "Elegir / Crear Usuario";
-            }
-        }
-
-        function handleCreateUser(e) {
-            e.preventDefault();
-            const nameInput = document.getElementById('new-user-name').value.trim();
-            const pinInput = document.getElementById('new-user-pin').value.trim();
-
-            if (!nameInput || pinInput.length !== 4) return;
-
-            const newUser = {
-                id: 'u_' + Date.now(),
-                name: nameInput,
-                pin: pinInput,
-                balance: 0
-            };
-
-            db.users.push(newUser);
-            saveState();
-            selectUser(newUser.id);
-            document.getElementById('form-new-user').reset();
-        }
-
-        // ================= CHECKOUT / CONFIRMACIÓN DE COMPRA =================
-
-        function checkoutModalOpen() {
-            if (!currentSelectedUser) {
-                alert("Por favor selecciona tu nombre antes de confirmar la compra.");
-                openUserSelectModal();
-                return;
-            }
-
-            if (cart.length === 0) {
-                alert("Tu canasta está vacía. Selecciona productos primero.");
-                return;
-            }
-
-            document.getElementById('checkout-pin-input').value = '';
-            document.getElementById('checkout-pin-error').classList.add('hidden');
-            openModal('modal-checkout-pin');
-        }
-
-        function processCheckout() {
-            const enteredPin = document.getElementById('checkout-pin-input').value;
-
-            if (enteredPin !== currentSelectedUser.pin) {
-                document.getElementById('checkout-pin-error').classList.remove('hidden');
-                return;
-            }
-
-            // Calcular total y descontar stock
-            let totalAmount = 0;
-            let itemsSummary = [];
-
-            cart.forEach(item => {
-                const product = db.products.find(p => p.id === item.productId);
-                if (product) {
-                    product.stock -= item.qty;
-                    const subtotal = product.price * item.qty;
-                    totalAmount += subtotal;
-                    itemsSummary.push(`${item.qty}x ${product.name}`);
-                }
-            });
-
-            // Actualizar cuenta de usuario
-            currentSelectedUser.balance += totalAmount;
-
-            // Registrar transacción en el historial
-            db.history.unshift({
-                id: 't_' + Date.now(),
-                date: new Date().toLocaleString('es-CL'),
-                userName: currentSelectedUser.name,
-                userId: currentSelectedUser.id,
-                type: 'COMPRA',
-                details: itemsSummary.join(', '),
-                amount: totalAmount
-            });
-
-            saveState();
-            clearCart();
-            renderKioskProducts();
-            closeModal('modal-checkout-pin');
-
-            alert(`¡Compra registrada con éxito por $${totalAmount.toLocaleString('es-CL')}! Se ha guardado en tu cuenta.`);
-        }
-
-        // ================= LÓGICA DE ADMINISTRACIÓN =================
-
-        function renderAdminInventory() {
-            const table = document.getElementById('admin-inventory-table');
-            const search = document.getElementById('admin-search-product').value.toLowerCase();
-            table.innerHTML = '';
-
-            const filtered = db.products.filter(p => p.name.toLowerCase().includes(search));
-
-            let totalMargin = 0;
-            filtered.forEach(p => {
-                const margin = p.price - p.cost;
-                totalMargin += margin * p.stock;
-
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 border-b border-slate-100";
-                tr.innerHTML = `
-                    <td class="p-4 flex items-center gap-2 font-semibold text-slate-800">
-                        <span>${p.icon || '📦'}</span> ${p.name}
-                    </td>
-                    <td class="p-4 text-center font-bold ${p.stock <= 5 ? 'text-rose-600' : 'text-slate-700'}">${p.stock}</td>
-                    <td class="p-4 text-right">$${p.cost.toLocaleString('es-CL')}</td>
-                    <td class="p-4 text-right font-bold text-indigo-600">$${p.price.toLocaleString('es-CL')}</td>
-                    <td class="p-4 text-right text-emerald-600 font-semibold">+$${margin.toLocaleString('es-CL')}</td>
-                    <td class="p-4 text-center">
-                        <div class="flex justify-center gap-2">
-                            <button onclick="editProduct('${p.id}')" class="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg"><i data-lucide="edit" class="w-4 h-4"></i></button>
-                            <button onclick="deleteProduct('${p.id}')" class="p-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                        </div>
-                    </td>
-                `;
-                table.appendChild(tr);
-            });
-
-            document.getElementById('admin-stock-stats').textContent = `Total ítems: ${filtered.length} | Ganancia estimada en stock: $${totalMargin.toLocaleString('es-CL')}`;
-            lucide.createIcons();
-        }
-
-        function openProductModal(productId = null) {
-            const form = document.getElementById('form-product');
-            form.reset();
-            document.getElementById('product-id').value = '';
-
-            if (productId) {
-                const p = db.products.find(item => item.id === productId);
-                if (p) {
-                    document.getElementById('product-modal-title').textContent = "Editar Producto";
-                    document.getElementById('product-id').value = p.id;
-                    document.getElementById('prod-name').value = p.name;
-                    document.getElementById('prod-stock').value = p.stock;
-                    document.getElementById('prod-icon').value = p.icon || '📦';
-                    document.getElementById('prod-cost').value = p.cost;
-                    document.getElementById('prod-price').value = p.price;
-                }
-            } else {
-                document.getElementById('product-modal-title').textContent = "Nuevo Producto";
-            }
-
-            openModal('modal-product-form');
-        }
-
-        function handleSaveProduct(e) {
-            e.preventDefault();
-            const id = document.getElementById('product-id').value;
-            const name = document.getElementById('prod-name').value.trim();
-            const stock = parseInt(document.getElementById('prod-stock').value);
-            const icon = document.getElementById('prod-icon').value.trim() || '📦';
-            const cost = parseInt(document.getElementById('prod-cost').value);
-            const price = parseInt(document.getElementById('prod-price').value);
-
-            if (id) {
-                const p = db.products.find(item => item.id === id);
-                if (p) {
-                    p.name = name; p.stock = stock; p.icon = icon; p.cost = cost; p.price = price;
-                }
-            } else {
-                db.products.push({
-                    id: 'p_' + Date.now(),
-                    name, stock, icon, cost, price
-                });
-            }
-
-            saveState();
-            renderAdminInventory();
-            renderKioskProducts();
-            closeModal('modal-product-form');
-        }
-
-        function editProduct(id) {
-            openProductModal(id);
-        }
-
-        function deleteProduct(id) {
-            if (confirm("¿Seguro que deseas eliminar este producto del inventario?")) {
-                db.products = db.products.filter(p => p.id !== id);
-                saveState();
-                renderAdminInventory();
-                renderKioskProducts();
-            }
-        }
-
-        function renderAdminAccounts() {
-            const table = document.getElementById('admin-accounts-table');
-            table.innerHTML = '';
-
-            db.users.forEach(u => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 border-b border-slate-100";
-                tr.innerHTML = `
-                    <td class="p-4 font-semibold text-slate-800">${u.name}</td>
-                    <td class="p-4 text-center font-mono text-slate-500">${u.pin}</td>
-                    <td class="p-4 text-right font-extrabold ${u.balance > 0 ? 'text-rose-600' : 'text-emerald-600'}">
-                        $${u.balance.toLocaleString('es-CL')}
-                    </td>
-                    <td class="p-4 text-center">
-                        <div class="flex justify-center gap-2">
-                            <button onclick="openAbonoModal('${u.id}')" ${u.balance <= 0 ? 'disabled' : ''} class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-lg text-xs font-semibold disabled:opacity-40">Abonar</button>
-                            <button onclick="settleAccount('${u.id}')" ${u.balance <= 0 ? 'disabled' : ''} class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold disabled:opacity-40 shadow">Saldo $0 (Pagado)</button>
-                        </div>
-                    </td>
-                `;
-                table.appendChild(tr);
-            });
-        }
-
-        function openAbonoModal(userId) {
-            const user = db.users.find(u => u.id === userId);
-            if (!user) return;
-
-            document.getElementById('payment-user-id').value = user.id;
-            document.getElementById('payment-user-name').textContent = `Cliente: ${user.name} (Deuda actual: $${user.balance.toLocaleString('es-CL')})`;
-            document.getElementById('payment-amount').value = '';
-            openModal('modal-payment');
-        }
-
-        function processAbono() {
-            const userId = document.getElementById('payment-user-id').value;
-            const amount = parseInt(document.getElementById('payment-amount').value);
-            const user = db.users.find(u => u.id === userId);
-
-            if (user && amount > 0) {
-                user.balance = Math.max(0, user.balance - amount);
-
-                db.history.unshift({
-                    id: 't_' + Date.now(),
-                    date: new Date().toLocaleString('es-CL'),
-                    userName: user.name,
-                    userId: user.id,
-                    type: 'ABONO',
-                    details: 'Abono parcial registrado por administrador',
-                    amount: amount
-                });
-
-                saveState();
-                renderAdminAccounts();
-                renderAdminHistory();
-                closeModal('modal-payment');
-                alert(`Abono aplicado correctamente. Nuevo saldo: $${user.balance.toLocaleString('es-CL')}`);
-            }
-        }
-
-        function settleAccount(userId) {
-            const user = db.users.find(u => u.id === userId);
-            if (user && confirm(`¿Confirmar liquidación total del saldo de ${user.name}?`)) {
-                const paidAmount = user.balance;
-                user.balance = 0;
-
-                db.history.unshift({
-                    id: 't_' + Date.now(),
-                    date: new Date().toLocaleString('es-CL'),
-                    userName: user.name,
-                    userId: user.id,
-                    type: 'PAGO TOTAL',
-                    details: 'Cierre mensual / Deuda saldada por completo',
-                    amount: paidAmount
-                });
-
-                saveState();
-                renderAdminAccounts();
-                renderAdminHistory();
-            }
-        }
-
-        function renderAdminHistory() {
-            const table = document.getElementById('admin-history-table');
-            table.innerHTML = '';
-
-            if (db.history.length === 0) {
-                table.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-slate-400">Sin historial registrado.</td></tr>`;
-                return;
-            }
-
-            db.history.forEach(h => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 border-b border-slate-100";
-                tr.innerHTML = `
-                    <td class="p-3 text-xs text-slate-500">${h.date}</td>
-                    <td class="p-3 font-medium text-slate-800">${h.userName}</td>
-                    <td class="p-3">
-                        <span class="text-xs px-2 py-0.5 rounded-full font-bold ${h.type === 'COMPRA' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">${h.type}</span>
-                    </td>
-                    <td class="p-3 text-xs text-slate-600">${h.details}</td>
-                    <td class="p-3 text-right font-bold text-slate-800">$${h.amount.toLocaleString('es-CL')}</td>
-                `;
-                table.appendChild(tr);
-            });
-        }
-
-        // ================= EXPORTAR A EXCEL (.CSV) =================
-
-        function exportDataCSV() {
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "FECHA,CLIENTE,TIPO,DETALLE,MONTO\n";
-
-            db.history.forEach(h => {
-                const cleanDetails = `"${h.details.replace(/"/g, '""')}"`;
-                csvContent += `${h.date},${h.userName},${h.type},${cleanDetails},${h.amount}\n`;
-            });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `reporte_bartolo_capitanes_vp1_${new Date().toISOString().slice(0, 10)}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // ================= FUNCIONES DE UTILIDAD (MODALES) =================
-
-        function openModal(id) {
-            document.getElementById(id).classList.remove('hidden');
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.add('hidden');
-        }
-    </script>
+      });
+
+      DB.users.forEach(u => totalDebt += u.debt);
+
+      document.getElementById('kpi-month-sales').innerText = `$${monthSales.toLocaleString()}`;
+      document.getElementById('kpi-month-payments').innerText = `$${monthPayments.toLocaleString()}`;
+      document.getElementById('kpi-month-net').innerText = `$${(monthPayments - monthSales).toLocaleString()}`;
+      document.getElementById('kpi-total-debt').innerText = `$${totalDebt.toLocaleString()}`;
+    }
+
+    function exportToCSV() {
+      let csv = 'Usuario,Deuda Acumulada\n';
+      DB.users.forEach(u => {
+        csv += `"${u.name}",${u.debt}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `reporte_bartolo_capitanes_${new Date().toISOString().slice(0,10)}.csv`;
+      link.click();
+    }
+  </script>
 </body>
 </html>
