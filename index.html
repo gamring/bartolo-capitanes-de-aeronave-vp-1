@@ -1,1164 +1,435 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bartolo capitanes aeronaves Vp-1 - Autoatención</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Font Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-            background-color: #f1f5f9;
-        }
-        /* Custom scrollbars */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 9999px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bartolo capitanes aeronaves Vp-1</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  </style>
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
+<body class="bg-[#f1f5f9] text-slate-800 min-h-screen flex flex-col">
 
-    <!-- Navbar Principal (Fidelidad total a la captura) -->
-    <header class="bg-[#0f172a] text-white shadow-md sticky top-0 z-30 border-b border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('kiosk')">
-                <div class="bg-amber-500/20 text-amber-400 p-2.5 rounded-xl border border-amber-500/30 flex items-center justify-center">
-                    <i data-lucide="plane" class="w-5 h-5 stroke-[2.5]"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-base md:text-lg leading-tight tracking-wide text-amber-400">Bartolo capitanes aeronaves Vp-1</h1>
-                    <p class="text-xs text-slate-400 flex items-center gap-1">
-                        <i data-lucide="shield" class="w-3 h-3 text-amber-500"></i> Punto de Autoatención y Confitería
-                    </p>
-                </div>
-            </div>
-
-            <!-- Navegación de Modos -->
-            <div class="flex items-center bg-[#1e293b] p-1 rounded-2xl border border-slate-700/80">
-                <button id="nav-kiosk" onclick="switchTab('kiosk')" class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 bg-white text-indigo-950 shadow-sm">
-                    <i data-lucide="shopping-bag" class="w-4 h-4 text-indigo-600"></i>
-                    <span>Autoatención</span>
-                </button>
-                <button id="nav-admin" onclick="openAdminAuthModal()" class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-slate-300 hover:text-white transition-all duration-200">
-                    <i data-lucide="shield-check" class="w-4 h-4"></i>
-                    <span>Administración</span>
-                </button>
-            </div>
+  <!-- BARRA SUPERIOR -->
+  <header class="bg-[#0f172a] text-white border-b border-slate-800 sticky top-0 z-40 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 text-base">
+          <i class="fa-solid fa-plane font-black"></i>
         </div>
-    </header>
-
-    <!-- Contenido Principal -->
-    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6">
-
-        <!-- ================= MÓDULO DE AUTOATENCIÓN ================= -->
-        <section id="tab-kiosk" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            
-            <!-- Panel Izquierdo: Selección de Cliente y Productos -->
-            <div class="lg:col-span-8 flex flex-col gap-5">
-                
-                <!-- Card de Identificación de Cliente (Formato Exacto Imagen) -->
-                <div class="bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div class="flex items-center gap-3.5 w-full sm:w-auto">
-                        <div class="bg-indigo-50 text-indigo-600 p-3 rounded-2xl flex items-center justify-center">
-                            <i data-lucide="user" class="w-6 h-6 stroke-[2.5]"></i>
-                        </div>
-                        <div class="flex-1">
-                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">COMPRANDO COMO:</span>
-                            <div class="flex items-center gap-2">
-                                <h2 id="current-user-display" class="text-lg font-bold text-slate-800">Gonzalo Mesa</h2>
-                                <span id="current-user-badge" class="text-xs bg-emerald-100 text-emerald-800 font-semibold px-2.5 py-0.5 rounded-full">Identificado</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                        <button onclick="openUserSelectModal()" class="flex-1 sm:flex-initial bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-bold px-4 py-2.5 rounded-2xl border border-indigo-100 text-xs flex items-center justify-center gap-2 transition-all">
-                            <i data-lucide="users" class="w-4 h-4"></i>
-                            <span id="btn-select-user-label">Cambiar Usuario</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Buscador Rectangular con bordes redondeados y Lupa -->
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <div class="relative flex-1">
-                        <i data-lucide="search" class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                        <input type="text" id="kiosk-search" oninput="renderKioskProducts()" placeholder="Buscar confitería, bebidas, snacks..." class="w-full pl-11 pr-4 py-3 bg-white border border-slate-200/80 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm text-sm">
-                    </div>
-                </div>
-
-                <!-- Grid de Productos Estilo Captura de Pantalla -->
-                <div id="kiosk-products-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                    <!-- Dinámico por JS -->
-                </div>
-            </div>
-
-            <!-- Panel Derecho: Carrito de Compras "Canasta del Día" -->
-            <div class="lg:col-span-4">
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5 sticky top-20 flex flex-col h-[calc(100vh-7rem)] max-h-[620px] justify-between">
-                    <div>
-                        <div class="flex items-center justify-between pb-4 border-b border-slate-100">
-                            <div class="flex items-center gap-2">
-                                <i data-lucide="shopping-cart" class="w-5 h-5 text-indigo-600"></i>
-                                <h3 class="font-bold text-slate-800 text-base">Canasta del Día</h3>
-                            </div>
-                            <button onclick="clearCart()" class="text-xs text-rose-500 hover:text-rose-700 font-semibold transition">Vaciar</button>
-                        </div>
-
-                        <!-- Listado del Carrito -->
-                        <div id="cart-items" class="overflow-y-auto py-3 space-y-3 max-h-[360px] pr-1">
-                            <!-- Dinámico JS -->
-                        </div>
-                    </div>
-
-                    <!-- Resumen del Carrito y Botón verde -->
-                    <div class="pt-4 border-t border-slate-100 space-y-3">
-                        <div class="flex justify-between items-center text-xs text-slate-500">
-                            <span>Total Items:</span>
-                            <span id="cart-count" class="font-bold text-slate-800">0</span>
-                        </div>
-                        <div class="flex justify-between items-center text-base font-extrabold text-slate-800 pt-0.5">
-                            <span>Total a Cargar:</span>
-                            <span id="cart-total" class="text-2xl font-extrabold text-indigo-600">$0</span>
-                        </div>
-
-                        <button onclick="checkoutModalOpen()" id="btn-checkout" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
-                            <i data-lucide="check-circle-2" class="w-5 h-5"></i>
-                            <span>Confirmar Compra</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ================= MÓDULO DE ADMINISTRACIÓN ================= -->
-        <section id="tab-admin" class="hidden space-y-6">
-            
-            <!-- Encabezado Admin -->
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 md:p-6 rounded-2xl border border-slate-200/80 shadow-sm">
-                <div>
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="plane" class="w-5 h-5 text-amber-600"></i>
-                        <h2 class="text-xl font-bold text-slate-800">Panel de Control - Bartolo capitanes aeronaves Vp-1</h2>
-                    </div>
-                    <p class="text-slate-500 text-xs mt-1">Gestiona el inventario, costo/venta, abonos, reset de PIN y flujo de caja.</p>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="changeAdminPin()" class="bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold px-3.5 py-2.5 rounded-xl border border-amber-200 text-xs flex items-center gap-2 transition">
-                        <i data-lucide="key" class="w-4 h-4"></i>
-                        <span>Clave Admin</span>
-                    </button>
-                    <button onclick="exportDataCSV()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs flex items-center gap-2 transition">
-                        <i data-lucide="download" class="w-4 h-4"></i>
-                        <span>Exportar Excel (.CSV)</span>
-                    </button>
-                    <button onclick="openProductModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs flex items-center gap-2 transition shadow-md">
-                        <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                        <span>Ingresar Producto</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- KPIs Flujo de Caja -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Ventas del Mes</p>
-                    <p id="kpi-month-sales" class="text-2xl font-black text-slate-800 mt-1">$0</p>
-                    <span class="text-[10px] text-slate-400">Total acumulado en deudas</span>
-                </div>
-                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Abonos Recibidos (Mes)</p>
-                    <p id="kpi-month-payments" class="text-2xl font-black text-emerald-600 mt-1">$0</p>
-                    <span class="text-[10px] text-slate-400">Ingreso real de efectivo/transferencia</span>
-                </div>
-                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Flujo Neto del Mes</p>
-                    <p id="kpi-month-net" class="text-2xl font-black text-indigo-600 mt-1">$0</p>
-                    <span class="text-[10px] text-slate-400">Diferencia de recaudación activa</span>
-                </div>
-                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Deuda Total Pendiente</p>
-                    <p id="kpi-total-debt" class="text-2xl font-black text-rose-600 mt-1">$0</p>
-                    <span class="text-[10px] text-slate-400">Saldo pendiente por cobrar</span>
-                </div>
-            </div>
-
-            <!-- Sub-Tabs de Admin -->
-            <div class="flex gap-2 border-b border-slate-200 pb-2">
-                <button id="subtab-btn-stock" onclick="switchAdminSubtab('stock')" class="px-4 py-2 rounded-xl font-bold text-xs bg-white text-indigo-700 shadow-sm border border-slate-200">
-                    Control de Inventario
-                </button>
-                <button id="subtab-btn-accounts" onclick="switchAdminSubtab('accounts')" class="px-4 py-2 rounded-xl font-bold text-xs text-slate-600 hover:bg-white transition">
-                    Cuentas y Saldos de Clientes
-                </button>
-                <button id="subtab-btn-history" onclick="switchAdminSubtab('history')" class="px-4 py-2 rounded-xl font-bold text-xs text-slate-600 hover:bg-white transition">
-                    Historial de Transacciones
-                </button>
-            </div>
-
-            <!-- SUB-TAB 1: INVENTARIO -->
-            <div id="subtab-stock" class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-                <div class="p-4 border-b border-slate-100 flex justify-between items-center">
-                    <input type="text" id="admin-search-product" oninput="renderAdminInventory()" placeholder="Filtrar inventario..." class="px-3 py-2 border rounded-xl text-xs w-64 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    <span id="admin-stock-stats" class="text-xs text-slate-500 font-medium"></span>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs text-slate-600">
-                        <thead class="bg-slate-50 text-slate-700 uppercase font-bold border-b border-slate-200">
-                            <tr>
-                                <th class="p-3.5">Imagen</th>
-                                <th class="p-3.5">Producto</th>
-                                <th class="p-3.5 text-center">Stock</th>
-                                <th class="p-3.5 text-right">Precio Costo</th>
-                                <th class="p-3.5 text-right">Precio Venta</th>
-                                <th class="p-3.5 text-right">Margen Uni.</th>
-                                <th class="p-3.5 text-center">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-inventory-table" class="divide-y divide-slate-100">
-                            <!-- JS Dinámico -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- SUB-TAB 2: CUENTAS Y SALDOS -->
-            <div id="subtab-accounts" class="hidden bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-                <div class="p-4 border-b border-slate-100 flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800 text-sm">Estado de Cuentas de Clientes</h3>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs text-slate-600">
-                        <thead class="bg-slate-50 text-slate-700 uppercase font-bold border-b border-slate-200">
-                            <tr>
-                                <th class="p-3.5">Nombre Cliente</th>
-                                <th class="p-3.5 text-center">PIN</th>
-                                <th class="p-3.5 text-right">Saldo Deuda Acumulado</th>
-                                <th class="p-3.5 text-center">Acciones de Pago / Reset PIN</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-accounts-table" class="divide-y divide-slate-100">
-                            <!-- JS Dinámico -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- SUB-TAB 3: HISTORIAL -->
-            <div id="subtab-history" class="hidden bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden p-4">
-                <h3 class="font-bold text-slate-800 text-sm mb-3">Historial General de Compras y Abonos</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs text-slate-600">
-                        <thead class="bg-slate-50 text-slate-700 uppercase font-bold border-b border-slate-200">
-                            <tr>
-                                <th class="p-3">Fecha / Hora</th>
-                                <th class="p-3">Cliente</th>
-                                <th class="p-3">Tipo</th>
-                                <th class="p-3">Detalle</th>
-                                <th class="p-3 text-right">Monto Total</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-history-table" class="divide-y divide-slate-100">
-                            <!-- JS Dinámico -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-        </section>
-
-    </main>
-
-    <!-- ================= MODALES ================= -->
-
-    <!-- Modal: Seleccionar / Crear Usuario -->
-    <div id="modal-select-user" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-5">
-            <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="text-base font-bold text-slate-800">Seleccionar Comprador</h3>
-                <button onclick="closeModal('modal-select-user')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-
-            <!-- Lista de Usuarios Existentes -->
-            <div class="space-y-2">
-                <label class="text-[11px] font-bold text-slate-400 uppercase">Clientes Registrados</label>
-                <div id="user-select-list" class="max-h-48 overflow-y-auto space-y-2 pr-1">
-                    <!-- Dinámico por JS -->
-                </div>
-            </div>
-
-            <div class="relative flex py-1 items-center">
-                <div class="flex-grow border-t border-slate-200"></div>
-                <span class="flex-shrink mx-3 text-xs text-slate-400 uppercase font-semibold">o Registra uno Nuevo</span>
-                <div class="flex-grow border-t border-slate-200"></div>
-            </div>
-
-            <!-- Formulario de Nuevo Usuario -->
-            <form id="form-new-user" onsubmit="handleCreateUser(event)" class="space-y-3">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre Completo</label>
-                    <input type="text" id="new-user-name" required placeholder="Ej: Gonzalo Mesa" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Crear PIN (4 Dígitos Numéricos)</label>
-                    <input type="password" id="new-user-pin" maxlength="4" pattern="\d{4}" required placeholder="****" class="w-full px-3 py-2 border rounded-xl text-xs text-center font-mono tracking-widest focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                </div>
-                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl text-xs transition">
-                    Crear y Seleccionar
-                </button>
-            </form>
+        <div>
+          <h1 class="text-base font-bold text-amber-400 leading-tight">Bartolo capitanes aeronaves Vp-1</h1>
+          <p class="text-[11px] text-slate-400">Punto de Autoatención y Confitería</p>
         </div>
+      </div>
+
+      <div class="bg-slate-800/80 p-1 rounded-xl flex border border-slate-700">
+        <button id="btn-nav-client" onclick="switchView('client')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition bg-white text-slate-900 shadow">
+          <i class="fa-solid fa-cart-shopping mr-1 text-blue-600"></i> Autoatención
+        </button>
+        <button id="btn-nav-admin" onclick="switchView('admin')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-slate-200">
+          <i class="fa-solid fa-shield-halved mr-1"></i> Administración
+        </button>
+      </div>
     </div>
+  </header>
 
-    <!-- Modal: Confirmar PIN Cliente para Compra -->
-    <div id="modal-checkout-pin" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center space-y-4">
-            <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto">
-                <i data-lucide="lock" class="w-6 h-6 stroke-[2.5]"></i>
+  <!-- CONTENEDOR PRINCIPAL -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6">
+
+    <!-- PERFIL AUTOATENCIÓN -->
+    <div id="view-client" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- IZQUIERDA: IDENTIFICACIÓN Y PRODUCTOS -->
+      <div class="lg:col-span-2 space-y-5">
+        
+        <div class="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-sm flex flex-wrap justify-between items-center gap-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-base">
+              <i class="fa-solid fa-user"></i>
             </div>
             <div>
-                <h3 class="text-base font-bold text-slate-800">Autorizar Compra</h3>
-                <p class="text-xs text-slate-500 mt-1">Ingresa tu PIN de 4 dígitos para confirmar el cargo a tu cuenta.</p>
+              <span class="text-[10px] font-bold text-slate-400 tracking-wider uppercase">Comprando como:</span>
+              <div class="flex items-center gap-2">
+                <h3 class="font-extrabold text-slate-800 text-base" id="client-user-name">Sin Identificar</h3>
+                <span id="client-user-badge" class="hidden px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">Identificado</span>
+              </div>
             </div>
-            <div>
-                <input type="password" id="checkout-pin-input" maxlength="4" pattern="\d{4}" placeholder="****" class="w-32 mx-auto text-center font-mono text-2xl tracking-widest border-2 border-indigo-200 rounded-xl py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-            </div>
-            <div id="checkout-pin-error" class="text-xs text-rose-600 font-semibold hidden">PIN incorrecto. Inténtalo de nuevo.</div>
-            <div class="flex gap-2">
-                <button onclick="closeModal('modal-checkout-pin')" class="flex-1 border border-slate-200 text-slate-600 font-bold py-2.5 rounded-xl text-xs hover:bg-slate-50">Cancelar</button>
-                <button onclick="processCheckout()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs transition shadow">Autorizar</button>
-            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button onclick="openSelectUserModal()" class="px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold rounded-xl text-xs transition flex items-center gap-1.5">
+              <i class="fa-solid fa-user-check"></i> <span id="btn-select-user-text">Seleccionar Usuario</span>
+            </button>
+            <button onclick="openRegisterUserModal()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition">
+              <i class="fa-solid fa-plus"></i> Crear
+            </button>
+          </div>
         </div>
+
+        <div class="relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400 text-xs"></i>
+          <input type="text" id="search-input" oninput="renderProducts()" placeholder="Buscar confitería, bebidas, snacks..." class="w-full bg-white border border-slate-200/90 rounded-2xl pl-10 pr-4 py-3 text-xs md:text-sm text-slate-800 focus:outline-none focus:border-blue-500 shadow-sm">
+        </div>
+
+        <div id="products-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
+      </div>
+
+      <!-- DERECHA: CANASTA -->
+      <div class="lg:col-span-1">
+        <div class="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-sm sticky top-20 flex flex-col justify-between min-h-[480px]">
+          <div>
+            <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100">
+              <h3 class="font-extrabold text-slate-800 text-sm flex items-center gap-2">
+                <i class="fa-solid fa-cart-shopping text-blue-600"></i> Canasta del Día
+              </h3>
+              <button onclick="clearCart()" class="text-[11px] text-red-500 font-semibold hover:underline">Vaciar</button>
+            </div>
+
+            <div id="cart-items" class="space-y-3 max-h-[300px] overflow-y-auto pr-1">
+              <p class="text-xs text-slate-400 text-center py-16">Tu canasta está vacía.</p>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-slate-100 space-y-3">
+            <div class="flex justify-between text-xs text-slate-500">
+              <span>Total Items:</span>
+              <span id="cart-qty" class="font-bold text-slate-700">0</span>
+            </div>
+            <div class="flex justify-between text-base font-extrabold text-slate-900">
+              <span>Total a Cargar:</span>
+              <span id="cart-total" class="text-blue-600">$0</span>
+            </div>
+
+            <button onclick="requestCheckout()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-sm">
+              <i class="fa-solid fa-circle-check"></i> Confirmar Compra
+            </button>
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <!-- Modal: Login de Administrador -->
-    <div id="modal-admin-auth" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center space-y-4">
-            <div class="w-12 h-12 bg-slate-100 text-slate-700 rounded-full flex items-center justify-center mx-auto">
-                <i data-lucide="shield" class="w-6 h-6"></i>
-            </div>
-            <div>
-                <h3 class="text-base font-bold text-slate-800">Acceso Administrador</h3>
-                <p class="text-xs text-slate-500 mt-1">Introduce el PIN de Administrador (Por defecto: 1234)</p>
-            </div>
-            <div>
-                <input type="password" id="admin-pin-input" maxlength="4" placeholder="****" class="w-32 mx-auto text-center font-mono text-2xl tracking-widest border-2 border-slate-200 rounded-xl py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-            </div>
-            <div id="admin-pin-error" class="text-xs text-rose-600 font-semibold hidden">PIN de administrador no válido.</div>
-            <div class="flex gap-2">
-                <button onclick="closeModal('modal-admin-auth')" class="flex-1 border border-slate-200 text-slate-600 font-bold py-2.5 rounded-xl text-xs">Cancelar</button>
-                <button onclick="verifyAdminPin()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl text-xs transition">Ingresar</button>
-            </div>
+    <!-- PERFIL ADMINISTRACIÓN -->
+    <div id="view-admin" class="hidden space-y-6">
+      
+      <div class="flex flex-wrap justify-between items-center gap-4 bg-white p-4 rounded-2xl border border-slate-200/90 shadow-sm">
+        <div>
+          <h2 class="font-extrabold text-slate-800 text-base">Panel de Control de Administración</h2>
+          <p class="text-xs text-slate-500">Gestión de stock, flujo de caja y reseteo de claves</p>
         </div>
+
+        <div class="flex gap-2">
+          <button onclick="openProductModal()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3.5 py-2 rounded-xl text-xs flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-plus"></i> Ingresar Producto
+          </button>
+          <button onclick="changeAdminPin()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1 transition">
+            <i class="fa-solid fa-key"></i> Clave Admin
+          </button>
+          <button onclick="exportToCSV()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1 transition">
+            <i class="fa-solid fa-file-excel"></i> Exportar CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- KPIS CAJA -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-sm">
+          <p class="text-[11px] font-bold text-slate-400 uppercase">Ventas del Mes</p>
+          <p class="text-2xl font-black text-slate-800 mt-1" id="kpi-month-sales">$0</p>
+          <span class="text-[10px] text-slate-400">Total acumulado en deudas</span>
+        </div>
+        <div class="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-sm">
+          <p class="text-[11px] font-bold text-slate-400 uppercase">Abonos Recibidos (Mes)</p>
+          <p class="text-2xl font-black text-emerald-600 mt-1" id="kpi-month-payments">$0</p>
+          <span class="text-[10px] text-slate-400">Recaudación real ingresada</span>
+        </div>
+        <div class="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-sm">
+          <p class="text-[11px] font-bold text-slate-400 uppercase">Flujo Neto del Mes</p>
+          <p class="text-2xl font-black text-blue-600 mt-1" id="kpi-month-net">$0</p>
+          <span class="text-[10px] text-slate-400">Abonos vs Compras del período</span>
+        </div>
+        <div class="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-sm">
+          <p class="text-[11px] font-bold text-slate-400 uppercase">Deuda Total Pendiente</p>
+          <p class="text-2xl font-black text-red-500 mt-1" id="kpi-total-debt">$0</p>
+          <span class="text-[10px] text-slate-400">Por cobrar entre usuarios</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 bg-white border border-slate-200/90 rounded-2xl p-5 shadow-sm">
+          <h3 class="font-extrabold text-slate-800 text-sm mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-boxes-stacked text-blue-600"></i> Control de Stock e Inventario
+          </h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 text-slate-500 uppercase font-bold border-b border-slate-200">
+                <tr>
+                  <th class="p-3">Foto</th>
+                  <th class="p-3">Producto</th>
+                  <th class="p-3">Stock</th>
+                  <th class="p-3">Costo</th>
+                  <th class="p-3">Venta</th>
+                  <th class="p-3">Margen</th>
+                  <th class="p-3 text-right">Acción</th>
+                </tr>
+              </thead>
+              <tbody id="admin-inventory-table" class="divide-y divide-slate-100"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="lg:col-span-1 bg-white border border-slate-200/90 rounded-2xl p-5 shadow-sm">
+          <h3 class="font-extrabold text-slate-800 text-sm mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-users text-blue-600"></i> Cuentas de Clientes
+          </h3>
+          <div id="admin-users-list" class="space-y-3 max-h-[400px] overflow-y-auto pr-1"></div>
+        </div>
+      </div>
+
+      <div class="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-sm">
+        <h3 class="font-extrabold text-slate-800 text-sm mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-clock-rotate-left text-blue-600"></i> Historial de Compras y Abonos
+        </h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 text-slate-500 uppercase font-bold border-b border-slate-200">
+              <tr>
+                <th class="p-3">Fecha y Hora</th>
+                <th class="p-3">Tipo</th>
+                <th class="p-3">Cliente</th>
+                <th class="p-3">Monto</th>
+              </tr>
+            </thead>
+            <tbody id="admin-history-table" class="divide-y divide-slate-100"></tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
 
-    <!-- Modal: Crear/Editar Producto Con Foto (Corregido y Funcional) -->
-    <div id="modal-product-form" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-4">
-            <div class="flex justify-between items-center border-b pb-3">
-                <h3 id="product-modal-title" class="text-base font-bold text-slate-800">Ingresar Producto</h3>
-                <button onclick="closeModal('modal-product-form')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
-            </div>
-            <form id="form-product" onsubmit="handleSaveProduct(event)" class="space-y-3">
-                <input type="hidden" id="product-id">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre del Producto</label>
-                    <input type="text" id="prod-name" required placeholder="Ej: Café de Capitanes Espresso" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                </div>
-                <div class="grid grid-cols-3 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">Stock</label>
-                        <input type="number" id="prod-stock" min="0" required placeholder="25" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">Precio Costo ($)</label>
-                        <input type="number" id="prod-cost" min="0" step="1" required placeholder="400" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">Precio Venta ($)</label>
-                        <input type="number" id="prod-price" min="0" step="1" required placeholder="800" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                    </div>
-                </div>
+  </main>
 
-                <!-- Subir Foto local o URL / Emoji -->
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Subir Foto (Desde dispositivo)</label>
-                    <input type="file" id="prod-file-input" accept="image/*" onchange="previewProductImage(event)" class="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">O URL de Imagen Web</label>
-                        <input type="text" id="prod-image-url" placeholder="https://..." oninput="previewUrlImage()" class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">O Emoji Por Defecto</label>
-                        <input type="text" id="prod-icon" placeholder="☕" oninput="previewEmojiImage()" class="w-full px-3 py-2 border rounded-xl text-xs text-center focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                    </div>
-                </div>
-
-                <!-- Vista Previa Imagen -->
-                <div class="flex items-center gap-3 pt-1">
-                    <span class="text-xs font-semibold text-slate-500">Vista previa foto:</span>
-                    <div id="prod-image-preview-container" class="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden text-2xl">
-                        ☕
-                    </div>
-                </div>
-
-                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl text-xs transition shadow mt-2">
-                    Guardar Producto
-                </button>
-            </form>
-        </div>
+  <!-- MODALES DEL SISTEMA -->
+  <div id="modal-pin" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 w-full max-w-xs rounded-2xl p-5 shadow-2xl text-center">
+      <h3 class="font-extrabold text-slate-800 text-base mb-1" id="pin-modal-title">Confirmar PIN</h3>
+      <p class="text-xs text-slate-500 mb-4" id="pin-modal-subtitle">Ingresa tu clave de 4 dígitos</p>
+      <input type="password" id="input-pin" maxlength="4" placeholder="••••" class="w-full text-center text-2xl font-bold bg-slate-50 border border-slate-300 text-blue-600 rounded-xl py-3 mb-4 tracking-widest focus:outline-none focus:border-blue-500">
+      <div class="grid grid-cols-2 gap-2">
+        <button onclick="closePinModal()" class="w-full bg-slate-100 text-slate-600 font-bold py-2.5 rounded-xl text-xs">Cancelar</button>
+        <button id="btn-confirm-pin" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-xs">Confirmar</button>
+      </div>
     </div>
+  </div>
 
-    <!-- Modal: Registrar Abono Parcial -->
-    <div id="modal-payment" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center space-y-4">
-            <h3 class="text-base font-bold text-slate-800">Registrar Abono</h3>
-            <p id="payment-user-name" class="text-xs text-slate-600 font-semibold"></p>
-            <input type="hidden" id="payment-user-id">
-            <div>
-                <label class="block text-xs text-slate-500 mb-1">Monto del Abono ($)</label>
-                <input type="number" id="payment-amount" min="1" placeholder="Ej: 2000" class="w-full text-center text-xl font-bold border-2 border-emerald-200 rounded-xl py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-            </div>
-            <div class="flex gap-2">
-                <button onclick="closeModal('modal-payment')" class="flex-1 border border-slate-200 text-slate-600 font-bold py-2 rounded-xl text-xs">Cancelar</button>
-                <button onclick="processAbono()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl text-xs transition">Aplicar Abono</button>
-            </div>
-        </div>
+  <div id="modal-select-user" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 w-full max-w-sm rounded-2xl p-5 shadow-2xl">
+      <h3 class="font-extrabold text-slate-800 text-base mb-3">Selecciona tu Perfil</h3>
+      <div id="modal-user-list" class="space-y-2 max-h-[300px] overflow-y-auto pr-1"></div>
+      <button onclick="closeSelectUserModal()" class="w-full bg-slate-100 text-slate-600 font-bold py-2.5 rounded-xl text-xs mt-4">Cerrar</button>
     </div>
+  </div>
 
-    <!-- SCRIPT DE LÓGICA DE LA APLICACIÓN -->
-    <script>
-        // ================= ESTADO GLOBAL Y LOCALSTORAGE =================
-        let db = {
-            adminPin: '1234',
-            products: [],
-            users: [],
-            history: []
-        };
+  <div id="modal-user" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 w-full max-w-sm rounded-2xl p-5 shadow-2xl">
+      <h3 class="font-extrabold text-slate-800 text-base mb-3">Nuevo Usuario</h3>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs text-slate-500 font-semibold mb-1">Nombre Completo:</label>
+          <input type="text" id="new-user-name" placeholder="Ej: Gonzalo Mesa" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-blue-500">
+        </div>
+        <div>
+          <label class="block text-xs text-slate-500 font-semibold mb-1">PIN de Seguridad (4 dígitos):</label>
+          <input type="password" id="new-user-pin" maxlength="4" placeholder="••••" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-blue-600 font-bold tracking-widest focus:outline-none focus:border-blue-500">
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-2 mt-5">
+        <button onclick="closeRegisterUserModal()" class="w-full bg-slate-100 text-slate-600 font-bold py-2.5 rounded-xl text-xs">Cancelar</button>
+        <button onclick="saveNewUser()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-xs">Guardar</button>
+      </div>
+    </div>
+  </div>
 
-        let currentSelectedUser = null;
-        let cart = [];
-        let tempBase64Image = '';
+  <div id="modal-product" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 w-full max-w-md rounded-2xl p-5 shadow-2xl">
+      <h3 class="font-extrabold text-slate-800 text-base mb-3">Ingresar Nuevo Producto</h3>
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-600 mb-1">Nombre del Producto:</label>
+          <input type="text" id="prod-name" placeholder="Ej: Café Espresso Capitanes" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-800 focus:outline-none focus:border-blue-500">
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="block font-semibold text-slate-600 mb-1">Stock:</label>
+            <input type="number" id="prod-stock" min="0" placeholder="25" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-800 focus:outline-none focus:border-blue-500">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-600 mb-1">Precio Costo:</label>
+            <input type="number" id="prod-cost" min="0" placeholder="500" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-800 focus:outline-none focus:border-blue-500">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-600 mb-1">Precio Venta:</label>
+            <input type="number" id="prod-price" min="0" placeholder="800" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-800 focus:outline-none focus:border-blue-500">
+          </div>
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-600 mb-1">Cargar Foto (Desde tu Dispositivo):</label>
+          <input type="file" id="prod-image-file" accept="image/*" onchange="previewImageFile(event)" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-1 text-slate-600 text-xs">
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-600 mb-1">O URL de Foto / Emoji:</label>
+          <input type="text" id="prod-image-url" placeholder="https://... o ☕" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-slate-800 focus:outline-none focus:border-blue-500">
+        </div>
+        <div class="flex items-center gap-3 pt-1">
+          <span class="text-slate-500">Vista Previa:</span>
+          <div class="w-12 h-12 rounded-xl bg-slate-100 border border-slate-300 flex items-center justify-center overflow-hidden" id="prod-preview-box">
+            <i class="fa-solid fa-image text-slate-400"></i>
+          </div>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-2 mt-5">
+        <button onclick="closeProductModal()" class="w-full bg-slate-100 text-slate-600 font-bold py-2.5 rounded-xl text-xs">Cancelar</button>
+        <button onclick="saveProduct()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-xs">Guardar Producto</button>
+      </div>
+    </div>
+  </div>
 
-        // Inicialización al cargar la página
-        window.onload = function () {
-            loadState();
-            if (db.products.length === 0) {
-                seedInitialData();
-            }
-            if (db.users.length > 0 && !currentSelectedUser) {
-                currentSelectedUser = db.users[0];
-            }
-            renderKioskProducts();
-            updateCurrentUserUI();
-            lucide.createIcons();
-        };
+  <!-- SCRIPT LÓGICO -->
+  <script>
+    let DB = {
+      adminPin: localStorage.getItem('bartolo_admin_pin') || "1234",
+      products: JSON.parse(localStorage.getItem('bartolo_products')) || [
+        { id: 1, name: 'Café de Capitanes Espresso', stock: 29, cost: 400, price: 800, img: '☕' },
+        { id: 2, name: 'Chocolatina Alfajor Vp-1', stock: 24, cost: 350, price: 700, img: '🍫' },
+        { id: 3, name: 'Galletas de Chocovainilla', stock: 18, cost: 300, price: 600, img: '🍪' },
+        { id: 4, name: 'Gaseosa Mini 250ml', stock: 10, cost: 500, price: 900, img: '🥤' },
+        { id: 5, name: 'Papas Fritas Snacks 50g', stock: 20, cost: 600, price: 1100, img: '🍟' },
+        { id: 6, name: 'Barras Proteicas Vuelo', stock: 13, cost: 700, price: 1300, img: '⚡' }
+      ],
+      users: JSON.parse(localStorage.getItem('bartolo_users')) || [
+        { id: 101, name: 'Gonzalo Mesa', pin: '1234', debt: 0 }
+      ],
+      transactions: JSON.parse(localStorage.getItem('bartolo_transactions')) || []
+    };
 
-        function saveState() {
-            localStorage.setItem('confiteria_db', JSON.stringify(db));
+    let activeUser = null;
+    let cart = [];
+    let isAdmin = false;
+    let tempImageBase64 = '';
+    let pinActionCallback = null;
+
+    function saveDB() {
+      localStorage.setItem('bartolo_admin_pin', DB.adminPin);
+      localStorage.setItem('bartolo_products', JSON.stringify(DB.products));
+      localStorage.setItem('bartolo_users', JSON.stringify(DB.users));
+      localStorage.setItem('bartolo_transactions', JSON.stringify(DB.transactions));
+      syncActiveUser();
+      renderAll();
+    }
+
+    function syncActiveUser() {
+      if (activeUser) {
+        const found = DB.users.find(u => u.id === activeUser.id);
+        if (found) {
+          activeUser = found;
+          document.getElementById('client-user-name').innerText = activeUser.name;
         }
-
-        function loadState() {
-            const data = localStorage.getItem('confiteria_db');
-            if (data) {
-                try {
-                    db = JSON.parse(data);
-                } catch (e) {
-                    console.error("Error al cargar localStorage", e);
-                }
-            }
-        }
-
-        // Datos iniciales de demostración
-        function seedInitialData() {
-            db.products = [
-                { id: '1', name: 'Café de Capitanes Espresso', stock: 29, cost: 400, price: 800, icon: '☕' },
-                { id: '2', name: 'Chocolatina Alfajor Vp-1', stock: 24, cost: 400, price: 700, icon: '🍫' },
-                { id: '3', name: 'Galletas de Chocovainilla', stock: 18, cost: 300, price: 600, icon: '🍪' },
-                { id: '4', name: 'Gaseosa Mini 250ml', stock: 10, cost: 500, price: 900, icon: '🥤' },
-                { id: '5', name: 'Papas Fritas Snacks 50g', stock: 20, cost: 600, price: 1100, icon: '🍟' },
-                { id: '6', name: 'Barras Proteicas Vuelo', stock: 13, cost: 700, price: 1300, icon: '⚡' }
-            ];
-
-            db.users = [
-                { id: 'u1', name: 'Gonzalo Mesa', pin: '1234', balance: 0 },
-                { id: 'u2', name: 'Capitán Bartolo', pin: '1111', balance: 0 }
-            ];
-
-            saveState();
-        }
-
-        // ================= CAMBIO DE NAVEGACIÓN Y VISTAS =================
-        function switchTab(tab) {
-            const kioskSection = document.getElementById('tab-kiosk');
-            const adminSection = document.getElementById('tab-admin');
-            const navKiosk = document.getElementById('nav-kiosk');
-            const navAdmin = document.getElementById('nav-admin');
-
-            if (tab === 'kiosk') {
-                kioskSection.classList.remove('hidden');
-                adminSection.classList.add('hidden');
-
-                navKiosk.className = "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 bg-white text-indigo-950 shadow-sm";
-                navAdmin.className = "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-slate-300 hover:text-white transition-all duration-200";
-            } else {
-                kioskSection.classList.add('hidden');
-                adminSection.classList.remove('hidden');
-
-                navAdmin.className = "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 bg-white text-indigo-950 shadow-sm";
-                navKiosk.className = "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-slate-300 hover:text-white transition-all duration-200";
-                
-                renderAdminInventory();
-                renderAdminAccounts();
-                renderAdminHistory();
-                renderKPIs();
-            }
-        }
-
-        function openAdminAuthModal() {
-            document.getElementById('admin-pin-input').value = '';
-            document.getElementById('admin-pin-error').classList.add('hidden');
-            openModal('modal-admin-auth');
-        }
-
-        function verifyAdminPin() {
-            const inputPin = document.getElementById('admin-pin-input').value;
-            if (inputPin === db.adminPin) {
-                closeModal('modal-admin-auth');
-                switchTab('admin');
-            } else {
-                document.getElementById('admin-pin-error').classList.remove('hidden');
-            }
-        }
-
-        function changeAdminPin() {
-            const newPin = prompt('Ingrese el nuevo PIN de Administrador (4 dígitos):');
-            if (newPin && newPin.trim().length === 4) {
-                db.adminPin = newPin.trim();
-                saveState();
-                alert('Clave de Administrador actualizada correctamente.');
-            } else if (newPin !== null) {
-                alert('El PIN debe tener 4 dígitos.');
-            }
-        }
-
-        function switchAdminSubtab(sub) {
-            ['stock', 'accounts', 'history'].forEach(s => {
-                document.getElementById(`subtab-${s}`).classList.add('hidden');
-                document.getElementById(`subtab-btn-${s}`).className = "px-4 py-2 rounded-xl font-bold text-xs text-slate-600 hover:bg-white transition";
-            });
-
-            document.getElementById(`subtab-${sub}`).classList.remove('hidden');
-            document.getElementById(`subtab-btn-${sub}`).className = "px-4 py-2 rounded-xl font-bold text-xs bg-white text-indigo-700 shadow-sm border border-slate-200";
-        }
-
-        // ================= LÓGICA AUTOATENCIÓN (REPLICANDO CAPTURA) =================
-
-        function renderKioskProducts() {
-            const grid = document.getElementById('kiosk-products-grid');
-            const search = document.getElementById('kiosk-search').value.toLowerCase();
-            grid.innerHTML = '';
-
-            const filtered = db.products.filter(p => p.name.toLowerCase().includes(search));
-
-            if (filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-full py-10 text-center text-slate-400 text-xs">No se encontraron productos en stock.</div>`;
-                return;
-            }
-
-            filtered.forEach(p => {
-                const isOutOfStock = p.stock <= 0;
-                const isImg = p.icon && (p.icon.startsWith('data:image') || p.icon.startsWith('http'));
-                
-                const imgHTML = isImg 
-                    ? `<img src="${p.icon}" class="h-12 w-12 object-contain mx-auto mb-2">`
-                    : `<div class="text-3xl mb-2 text-center">${p.icon || '📦'}</div>`;
-
-                const card = document.createElement('div');
-                card.className = `bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm flex flex-col justify-between transition hover:shadow-md ${isOutOfStock ? 'opacity-50' : ''}`;
-                card.innerHTML = `
-                    <div class="text-center py-1">
-                        ${imgHTML}
-                        <h4 class="font-bold text-slate-800 text-xs leading-snug line-clamp-2 min-h-[32px]">${p.name}</h4>
-                        <p class="text-[11px] text-slate-400 mt-1">Stock: <span class="font-bold text-slate-600">${p.stock}</span></p>
-                    </div>
-                    <div class="mt-2 pt-2 flex items-center justify-between">
-                        <span class="font-bold text-indigo-600 text-sm">$${p.price.toLocaleString('es-CL')}</span>
-                        <button onclick="addToCart('${p.id}')" ${isOutOfStock ? 'disabled' : ''} class="w-8 h-8 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold flex items-center justify-center text-xs shadow transition disabled:opacity-50">
-                            <i data-lucide="plus" class="w-4 h-4"></i>
-                        </button>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-            lucide.createIcons();
-        }
-
-        function addToCart(productId) {
-            const product = db.products.find(p => p.id === productId);
-            if (!product || product.stock <= 0) return;
-
-            const existingItem = cart.find(item => item.productId === productId);
-            if (existingItem) {
-                if (existingItem.qty < product.stock) {
-                    existingItem.qty += 1;
-                } else {
-                    alert(`No hay más stock disponible de ${product.name}`);
-                }
-            } else {
-                cart.push({ productId, qty: 1 });
-            }
-            renderCart();
-        }
-
-        function updateCartQty(productId, delta) {
-            const itemIndex = cart.findIndex(i => i.productId === productId);
-            if (itemIndex > -1) {
-                const product = db.products.find(p => p.id === productId);
-                const newQty = cart[itemIndex].qty + delta;
-
-                if (newQty > product.stock) {
-                    alert(`Solo hay ${product.stock} unidades en stock.`);
-                    return;
-                }
-
-                if (newQty <= 0) {
-                    cart.splice(itemIndex, 1);
-                } else {
-                    cart[itemIndex].qty = newQty;
-                }
-            }
-            renderCart();
-        }
-
-        function clearCart() {
-            cart = [];
-            renderCart();
-        }
-
-        function renderCart() {
-            const container = document.getElementById('cart-items');
-            const countEl = document.getElementById('cart-count');
-            const totalEl = document.getElementById('cart-total');
-            container.innerHTML = '';
-
-            let total = 0;
-            let totalCount = 0;
-
-            if (cart.length === 0) {
-                container.innerHTML = `<div class="text-center py-16 text-slate-400 text-xs">Tu canasta está vacía.</div>`;
-            } else {
-                cart.forEach(item => {
-                    const prod = db.products.find(p => p.id === item.productId);
-                    if (prod) {
-                        const subtotal = prod.price * item.qty;
-                        total += subtotal;
-                        totalCount += item.qty;
-
-                        const row = document.createElement('div');
-                        row.className = "flex items-center justify-between bg-slate-50 p-2.5 rounded-xl border border-slate-100";
-                        row.innerHTML = `
-                            <div class="flex-1 pr-2">
-                                <div class="font-bold text-xs text-slate-800">${prod.name}</div>
-                                <div class="text-xs text-indigo-600 font-bold">$${prod.price.toLocaleString('es-CL')}</div>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <button onclick="updateCartQty('${prod.id}', -1)" class="w-6 h-6 bg-white border border-slate-200 rounded-lg text-slate-600 flex items-center justify-center font-bold text-xs">-</button>
-                                <span class="text-xs font-bold text-slate-700 w-4 text-center">${item.qty}</span>
-                                <button onclick="updateCartQty('${prod.id}', 1)" class="w-6 h-6 bg-white border border-slate-200 rounded-lg text-slate-600 flex items-center justify-center font-bold text-xs">+</button>
-                            </div>
-                        `;
-                        container.appendChild(row);
-                    }
-                });
-            }
-
-            countEl.textContent = totalCount;
-            totalEl.textContent = `$${total.toLocaleString('es-CL')}`;
-        }
-
-        // ================= GESTIÓN DE USUARIOS / COMPRADORES =================
-
-        function openUserSelectModal() {
-            renderUserSelectList();
-            openModal('modal-select-user');
-        }
-
-        function renderUserSelectList() {
-            const container = document.getElementById('user-select-list');
-            container.innerHTML = '';
-
-            if (db.users.length === 0) {
-                container.innerHTML = `<div class="text-xs text-slate-400 text-center py-2">Sin usuarios registrados.</div>`;
-                return;
-            }
-
-            db.users.forEach(u => {
-                const div = document.createElement('div');
-                div.className = "flex justify-between items-center bg-slate-50 hover:bg-indigo-50 p-3 rounded-xl border border-slate-200 cursor-pointer transition";
-                div.onclick = () => selectUser(u.id);
-                div.innerHTML = `
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="user-check" class="w-4 h-4 text-indigo-600"></i>
-                        <span class="font-bold text-xs text-slate-800">${u.name}</span>
-                    </div>
-                    <span class="text-[11px] text-slate-500 font-semibold">Deuda: $${u.balance.toLocaleString('es-CL')}</span>
-                `;
-                container.appendChild(div);
-            });
-            lucide.createIcons();
-        }
-
-        function selectUser(userId) {
-            currentSelectedUser = db.users.find(u => u.id === userId);
-            updateCurrentUserUI();
-            closeModal('modal-select-user');
-        }
-
-        function updateCurrentUserUI() {
-            const nameDisplay = document.getElementById('current-user-display');
-            const badge = document.getElementById('current-user-badge');
-            const btnLabel = document.getElementById('btn-select-user-label');
-
-            if (currentSelectedUser) {
-                nameDisplay.textContent = currentSelectedUser.name;
-                badge.classList.remove('hidden');
-                btnLabel.textContent = "Cambiar Usuario";
-            } else {
-                nameDisplay.textContent = "Seleccionar Comprador...";
-                badge.classList.add('hidden');
-                btnLabel.textContent = "Elegir / Crear Usuario";
-            }
-        }
-
-        function handleCreateUser(e) {
-            e.preventDefault();
-            const nameInput = document.getElementById('new-user-name').value.trim();
-            const pinInput = document.getElementById('new-user-pin').value.trim();
-
-            if (!nameInput || pinInput.length !== 4) return;
-
-            const newUser = {
-                id: 'u_' + Date.now(),
-                name: nameInput,
-                pin: pinInput,
-                balance: 0
-            };
-
-            db.users.push(newUser);
-            saveState();
-            selectUser(newUser.id);
-            document.getElementById('form-new-user').reset();
-        }
-
-        // ================= CHECKOUT / CONFIRMACIÓN DE COMPRA =================
-
-        function checkoutModalOpen() {
-            if (!currentSelectedUser) {
-                alert("Por favor selecciona tu nombre antes de confirmar la compra.");
-                openUserSelectModal();
-                return;
-            }
-
-            if (cart.length === 0) {
-                alert("Tu canasta está vacía. Selecciona productos primero.");
-                return;
-            }
-
-            document.getElementById('checkout-pin-input').value = '';
-            document.getElementById('checkout-pin-error').classList.add('hidden');
-            openModal('modal-checkout-pin');
-        }
-
-        function processCheckout() {
-            const enteredPin = document.getElementById('checkout-pin-input').value;
-
-            if (enteredPin !== currentSelectedUser.pin) {
-                document.getElementById('checkout-pin-error').classList.remove('hidden');
-                return;
-            }
-
-            // Calcular total y descontar stock
-            let totalAmount = 0;
-            let itemsSummary = [];
-
-            cart.forEach(item => {
-                const product = db.products.find(p => p.id === item.productId);
-                if (product) {
-                    product.stock -= item.qty;
-                    const subtotal = product.price * item.qty;
-                    totalAmount += subtotal;
-                    itemsSummary.push(`${item.qty}x ${product.name}`);
-                }
-            });
-
-            // Actualizar cuenta de usuario
-            currentSelectedUser.balance += totalAmount;
-
-            // Registrar transacción en el historial
-            db.history.unshift({
-                id: 't_' + Date.now(),
-                date: new Date().toLocaleString('es-CL'),
-                userName: currentSelectedUser.name,
-                userId: currentSelectedUser.id,
-                type: 'COMPRA',
-                details: itemsSummary.join(', '),
-                amount: totalAmount
-            });
-
-            saveState();
-            clearCart();
-            renderKioskProducts();
-            closeModal('modal-checkout-pin');
-
-            alert(`¡Compra registrada con éxito por $${totalAmount.toLocaleString('es-CL')}! Se ha guardado en tu cuenta.`);
-        }
-
-        // ================= LÓGICA DE PRODUCTOS Y FOTOGRAFÍAS (CORREGIDO) =================
-
-        function openProductModal(productId = null) {
-            const form = document.getElementById('form-product');
-            form.reset();
-            tempBase64Image = '';
-            document.getElementById('product-id').value = '';
-            document.getElementById('prod-image-preview-container').innerHTML = '☕';
-
-            if (productId) {
-                const p = db.products.find(item => item.id === productId);
-                if (p) {
-                    document.getElementById('product-modal-title').textContent = "Editar Producto";
-                    document.getElementById('product-id').value = p.id;
-                    document.getElementById('prod-name').value = p.name;
-                    document.getElementById('prod-stock').value = p.stock;
-                    document.getElementById('prod-cost').value = p.cost;
-                    document.getElementById('prod-price').value = p.price;
-
-                    if (p.icon && p.icon.startsWith('data:image')) {
-                        tempBase64Image = p.icon;
-                        document.getElementById('prod-image-preview-container').innerHTML = `<img src="${p.icon}" class="w-full h-full object-cover">`;
-                    } else if (p.icon && p.icon.startsWith('http')) {
-                        document.getElementById('prod-image-url').value = p.icon;
-                        document.getElementById('prod-image-preview-container').innerHTML = `<img src="${p.icon}" class="w-full h-full object-cover">`;
-                    } else {
-                        document.getElementById('prod-icon').value = p.icon || '☕';
-                        document.getElementById('prod-image-preview-container').innerHTML = p.icon || '☕';
-                    }
-                }
-            } else {
-                document.getElementById('product-modal-title').textContent = "Ingresar Producto";
-            }
-
-            openModal('modal-product-form');
-        }
-
-        function previewProductImage(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    tempBase64Image = e.target.result;
-                    document.getElementById('prod-image-preview-container').innerHTML = `<img src="${tempBase64Image}" class="w-full h-full object-cover rounded-xl">`;
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function previewUrlImage() {
-            const url = document.getElementById('prod-image-url').value.trim();
-            if (url) {
-                tempBase64Image = '';
-                document.getElementById('prod-image-preview-container').innerHTML = `<img src="${url}" class="w-full h-full object-cover rounded-xl">`;
-            }
-        }
-
-        function previewEmojiImage() {
-            const emoji = document.getElementById('prod-icon').value.trim();
-            if (emoji) {
-                tempBase64Image = '';
-                document.getElementById('prod-image-preview-container').innerHTML = emoji;
-            }
-        }
-
-        function handleSaveProduct(e) {
-            e.preventDefault();
-            const id = document.getElementById('product-id').value;
-            const name = document.getElementById('prod-name').value.trim();
-            const stock = parseInt(document.getElementById('prod-stock').value);
-            const cost = parseInt(document.getElementById('prod-cost').value);
-            const price = parseInt(document.getElementById('prod-price').value);
-            
-            const url = document.getElementById('prod-image-url').value.trim();
-            const emoji = document.getElementById('prod-icon').value.trim() || '📦';
-
-            const finalImage = tempBase64Image || url || emoji;
-
-            if (id) {
-                const p = db.products.find(item => item.id === id);
-                if (p) {
-                    p.name = name; p.stock = stock; p.icon = finalImage; p.cost = cost; p.price = price;
-                }
-            } else {
-                db.products.push({
-                    id: 'p_' + Date.now(),
-                    name, stock, icon: finalImage, cost, price
-                });
-            }
-
-            saveState();
-            renderAdminInventory();
-            renderKioskProducts();
-            closeModal('modal-product-form');
-        }
-
-        function editProduct(id) {
-            openProductModal(id);
-        }
-
-        function deleteProduct(id) {
-            if (confirm("¿Seguro que deseas eliminar este producto del inventario?")) {
-                db.products = db.products.filter(p => p.id !== id);
-                saveState();
-                renderAdminInventory();
-                renderKioskProducts();
-            }
-        }
-
-        // ================= LÓGICA DE ADMINISTRACIÓN & KPIS =================
-
-        function renderAdminInventory() {
-            const table = document.getElementById('admin-inventory-table');
-            const search = document.getElementById('admin-search-product').value.toLowerCase();
-            table.innerHTML = '';
-
-            const filtered = db.products.filter(p => p.name.toLowerCase().includes(search));
-
-            let totalMargin = 0;
-            filtered.forEach(p => {
-                const margin = p.price - p.cost;
-                totalMargin += margin * p.stock;
-
-                const isImg = p.icon && (p.icon.startsWith('data:image') || p.icon.startsWith('http'));
-                const imgHTML = isImg 
-                    ? `<img src="${p.icon}" class="w-8 h-8 object-cover rounded-lg">`
-                    : `<span class="text-xl">${p.icon || '📦'}</span>`;
-
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 border-b border-slate-100";
-                tr.innerHTML = `
-                    <td class="p-3.5 text-center">${imgHTML}</td>
-                    <td class="p-3.5 font-bold text-slate-800">${p.name}</td>
-                    <td class="p-3.5 text-center font-bold ${p.stock <= 5 ? 'text-rose-600' : 'text-slate-700'}">${p.stock}</td>
-                    <td class="p-3.5 text-right">$${p.cost.toLocaleString('es-CL')}</td>
-                    <td class="p-3.5 text-right font-bold text-indigo-600">$${p.price.toLocaleString('es-CL')}</td>
-                    <td class="p-3.5 text-right text-emerald-600 font-bold">+$${margin.toLocaleString('es-CL')}</td>
-                    <td class="p-3.5 text-center">
-                        <div class="flex justify-center gap-2">
-                            <button onclick="editProduct('${p.id}')" class="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg"><i data-lucide="edit" class="w-4 h-4"></i></button>
-                            <button onclick="deleteProduct('${p.id}')" class="p-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                        </div>
-                    </td>
-                `;
-                table.appendChild(tr);
-            });
-
-            document.getElementById('admin-stock-stats').textContent = `Total ítems: ${filtered.length} | Ganancia estimada: $${totalMargin.toLocaleString('es-CL')}`;
-            lucide.createIcons();
-        }
-
-        function renderAdminAccounts() {
-            const table = document.getElementById('admin-accounts-table');
-            table.innerHTML = '';
-
-            db.users.forEach(u => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 border-b border-slate-100";
-                tr.innerHTML = `
-                    <td class="p-3.5 font-bold text-slate-800">${u.name}</td>
-                    <td class="p-3.5 text-center font-mono text-slate-500">${u.pin}</td>
-                    <td class="p-3.5 text-right font-extrabold ${u.balance > 0 ? 'text-rose-600' : 'text-emerald-600'}">
-                        $${u.balance.toLocaleString('es-CL')}
-                    </td>
-                    <td class="p-3.5 text-center">
-                        <div class="flex justify-center gap-2">
-                            <button onclick="resetUserPin('${u.id}')" title="Resetear PIN" class="bg-amber-100 hover:bg-amber-200 text-amber-800 px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
-                                <i data-lucide="key" class="w-3.5 h-3.5"></i> PIN
-                            </button>
-                            <button onclick="openAbonoModal('${u.id}')" ${u.balance <= 0 ? 'disabled' : ''} class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-lg text-xs font-bold disabled:opacity-40">Abonar</button>
-                            <button onclick="settleAccount('${u.id}')" ${u.balance <= 0 ? 'disabled' : ''} class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold disabled:opacity-40 shadow">Saldo $0</button>
-                        </div>
-                    </td>
-                `;
-                table.appendChild(tr);
-            });
-            lucide.createIcons();
-        }
-
-        function resetUserPin(userId) {
-            const user = db.users.find(u => u.id === userId);
-            const newPin = prompt(`Ingrese el nuevo PIN de 4 dígitos para ${user.name}:`);
-            if (newPin && newPin.trim().length === 4) {
-                user.pin = newPin.trim();
-                saveState();
-                renderAdminAccounts();
-                alert(`El PIN de ${user.name} ha sido actualizado a: ${user.pin}`);
-            } else if (newPin !== null) {
-                alert("El PIN debe tener 4 dígitos numéricos.");
-            }
-        }
-
-        function openAbonoModal(userId) {
-            const user = db.users.find(u => u.id === userId);
-            if (!user) return;
-
-            document.getElementById('payment-user-id').value = user.id;
-            document.getElementById('payment-user-name').textContent = `Cliente: ${user.name} (Deuda actual: $${user.balance.toLocaleString('es-CL')})`;
-            document.getElementById('payment-amount').value = '';
-            openModal('modal-payment');
-        }
-
-        function processAbono() {
-            const userId = document.getElementById('payment-user-id').value;
-            const amount = parseInt(document.getElementById('payment-amount').value);
-            const user = db.users.find(u => u.id === userId);
-
-            if (user && amount > 0) {
-                user.balance = Math.max(0, user.balance - amount);
-
-                db.history.unshift({
-                    id: 't_' + Date.now(),
-                    date: new Date().toLocaleString('es-CL'),
-                    userName: user.name,
-                    userId: user.id,
-                    type: 'ABONO',
-                    details: 'Abono parcial registrado por administrador',
-                    amount: amount
-                });
-
-                saveState();
-                renderAdminAccounts();
-                renderAdminHistory();
-                renderKPIs();
-                closeModal('modal-payment');
-                alert(`Abono aplicado correctamente. Nuevo saldo: $${user.balance.toLocaleString('es-CL')}`);
-            }
-        }
-
-        function settleAccount(userId) {
-            const user = db.users.find(u => u.id === userId);
-            if (user && confirm(`¿Confirmar liquidación total del saldo de ${user.name}?`)) {
-                const paidAmount = user.balance;
-                user.balance = 0;
-
-                db.history.unshift({
-                    id: 't_' + Date.now(),
-                    date: new Date().toLocaleString('es-CL'),
-                    userName: user.name,
-                    userId: user.id,
-                    type: 'PAGO TOTAL',
-                    details: 'Cierre mensual / Deuda saldada por completo',
-                    amount: paidAmount
-                });
-
-                saveState();
-                renderAdminAccounts();
-                renderAdminHistory();
-                renderKPIs();
-            }
-        }
-
-        function renderAdminHistory() {
-            const table = document.getElementById('admin-history-table');
-            table.innerHTML = '';
-
-            if (db.history.length === 0) {
-                table.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-slate-400 text-xs">Sin historial registrado.</td></tr>`;
-                return;
-            }
-
-            db.history.forEach(h => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 border-b border-slate-100";
-                tr.innerHTML = `
-                    <td class="p-3 text-xs text-slate-500">${h.date}</td>
-                    <td class="p-3 font-bold text-slate-800">${h.userName}</td>
-                    <td class="p-3">
-                        <span class="text-[10px] px-2 py-0.5 rounded-full font-bold ${h.type === 'COMPRA' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">${h.type}</span>
-                    </td>
-                    <td class="p-3 text-xs text-slate-600">${h.details}</td>
-                    <td class="p-3 text-right font-extrabold text-slate-800">$${h.amount.toLocaleString('es-CL')}</td>
-                `;
-                table.appendChild(tr);
-            });
-        }
-
-        function renderKPIs() {
-            let monthSales = 0;
-            let monthPayments = 0;
-            let totalDebt = 0;
-
-            db.history.forEach(h => {
-                if (h.type === 'COMPRA') monthSales += h.amount;
-                if (h.type === 'ABONO' || h.type === 'PAGO TOTAL') monthPayments += h.amount;
-            });
-
-            db.users.forEach(u => {
-                totalDebt += u.balance;
-            });
-
-            document.getElementById('kpi-month-sales').textContent = `$${monthSales.toLocaleString('es-CL')}`;
-            document.getElementById('kpi-month-payments').textContent = `$${monthPayments.toLocaleString('es-CL')}`;
-            document.getElementById('kpi-month-net').textContent = `$${(monthPayments - monthSales).toLocaleString('es-CL')}`;
-            document.getElementById('kpi-total-debt').textContent = `$${totalDebt.toLocaleString('es-CL')}`;
-        }
-
-        // ================= EXPORTAR A EXCEL (.CSV) =================
-
-        function exportDataCSV() {
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "FECHA,CLIENTE,TIPO,DETALLE,MONTO\n";
-
-            db.history.forEach(h => {
-                const cleanDetails = `"${h.details.replace(/"/g, '""')}"`;
-                csvContent += `${h.date},${h.userName},${h.type},${cleanDetails},${h.amount}\n`;
-            });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `reporte_bartolo_capitanes_vp1_${new Date().toISOString().slice(0, 10)}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // ================= FUNCIONES DE UTILIDAD (MODALES) =================
-
-        function openModal(id) {
-            document.getElementById(id).classList.remove('hidden');
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.add('hidden');
-        }
-    </script>
-</body>
-</html>
+      }
+    }
+
+    window.onload = function() { renderAll(); };
+
+    function renderAll() {
+      renderProducts();
+      renderCart();
+      renderAdminTable();
+      renderAdminUsers();
+      renderHistoryTable();
+      renderKPIs();
+    }
+
+    function switchView(view) {
+      if (view === 'admin' && !isAdmin) {
+        openPinModal('Acceso Administración', `Ingresa la clave maestra (Por defecto: ${DB.adminPin})`, (pin) => {
+          if (pin === DB.adminPin) {
+            isAdmin = true;
+            document.getElementById('view-client').classList.add('hidden');
+            document.getElementById('view-admin').classList.remove('hidden');
+            document.getElementById('btn-nav-client').className = "px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-slate-200";
+            document.getElementById('btn-nav-admin').className = "px-3 py-1.5 rounded-lg text-xs font-bold transition bg-white text-slate-900 shadow";
+            closePinModal();
+          } else alert('Clave de administración incorrecta.');
+        });
+      } else if (view === 'client') {
+        isAdmin = false;
+        document.getElementById('view-admin').classList.add('hidden');
+        document.getElementById('view-client').classList.remove('hidden');
+        document.getElementById('btn-nav-client').className = "px-3 py-1.5 rounded-lg text-xs font-bold transition bg-white text-slate-900 shadow";
+        document.getElementById('btn-nav-admin').className = "px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-slate-200";
+      }
+    }
+
+    function openSelectUserModal() {
+      const container = document.getElementById('modal-user-list');
+      container.innerHTML = '';
+      DB.users.forEach(u => {
+        container.innerHTML += `
+          <button onclick="selectUser(${u.id})" class="w-full text-left bg-slate-50 hover:bg-blue-50 border border-slate-200 p-3 rounded-xl flex justify-between items-center transition">
+            <span class="font-bold text-xs text-slate-800">${u.name}</span> <span class="text-[11px] font-semibold text-red-500">Deuda: $${u.debt.toLocaleString()}</span>
+          </button>`;
+      });
+      document.getElementById('modal-select-user').classList.remove('hidden');
+    }
+
+    function closeSelectUserModal() { document.getElementById('modal-select-user').classList.add('hidden'); }
+
+    function selectUser(id) {
+      const user = DB.users.find(u => u.id === id);
+      if (user) {
+        activeUser = user;
+        document.getElementById('client-user-name').innerText = user.name;
+        document.getElementById('client-user-badge').classList.remove('hidden');
+        document.getElementById('btn-select-user-text').innerText = 'Cambiar Usuario';
+      }
+      closeSelectUserModal();
+    }
+
+    function openRegisterUserModal() { document.getElementById('modal-user').classList.remove('hidden'); }
+    function closeRegisterUserModal() {
+      document.getElementById('modal-user').classList.add('hidden');
+      document.getElementById('new-user-name').value = '';
+      document.getElementById('new-user-pin').value = '';
+    }
+
+    function saveNewUser() {
+      const name = document.getElementById('new-user-name').value.trim();
+      const pin = document.getElementById('new-user-pin').value.trim();
+      if (!name || pin.length !== 4) { alert('Ingresa tu nombre y un PIN de 4 dígitos.'); return; }
+      const newUser = { id: Date.now(), name, pin, debt: 0 };
+      DB.users.push(newUser);
+      saveDB();
+      selectUser(newUser.id);
+      closeRegisterUserModal();
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById('products-grid');
+      const query = document.getElementById('search-input').value.toLowerCase();
+      grid.innerHTML = '';
+
+      DB.products.filter(p => p.name.toLowerCase().includes(query)).forEach(p => {
+        const isEmoji = !p.img.startsWith('data:') && !p.img.startsWith('http');
+        const imgHTML = isEmoji 
+          ? `<span class="text-3xl">${p.img}</span>`
+          : `<img src="${p.img}" class="w-16 h-16 object-contain rounded-lg">`;
+
+        grid.innerHTML += `
+          <div class="bg-white border border-slate-200/90 rounded-2xl p-4 flex flex-col justify-between items-center text-center shadow-sm hover:shadow-md transition">
+            <div class="w-full flex flex-col items-center">
+              <div class="h-16 flex items-center justify-center mb-2">${imgHTML}</div>
+              <h4 class="font-extrabold text-slate-800 text-xs leading-tight mb-1 min-h-[28px] line-clamp-2">${p.
+                                                                                                               
