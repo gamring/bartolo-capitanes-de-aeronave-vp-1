@@ -213,7 +213,7 @@
 
   </main>
 
-  <!-- MODALES DEL SISTEMA -->
+  <!-- MODALES DE CONTROL -->
   <div id="modal-pin" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white border border-slate-200 w-full max-w-xs rounded-2xl p-5 shadow-2xl text-center">
       <h3 class="font-extrabold text-slate-800 text-base mb-1" id="pin-modal-title">Confirmar PIN</h3>
@@ -298,7 +298,6 @@
     </div>
   </div>
 
-  <!-- SCRIPT LÓGICO -->
   <script>
     let DB = {
       adminPin: localStorage.getItem('bartolo_admin_pin') || "1234",
@@ -379,7 +378,8 @@
       DB.users.forEach(u => {
         container.innerHTML += `
           <button onclick="selectUser(${u.id})" class="w-full text-left bg-slate-50 hover:bg-blue-50 border border-slate-200 p-3 rounded-xl flex justify-between items-center transition">
-            <span class="font-bold text-xs text-slate-800">${u.name}</span> <span class="text-[11px] font-semibold text-red-500">Deuda: $${u.debt.toLocaleString()}</span>
+            <span class="font-bold text-xs text-slate-800">${u.name}</span>
+            <span class="text-[11px] font-semibold text-red-500">Deuda: $${u.debt.toLocaleString()}</span>
           </button>`;
       });
       document.getElementById('modal-select-user').classList.remove('hidden');
@@ -431,5 +431,138 @@
           <div class="bg-white border border-slate-200/90 rounded-2xl p-4 flex flex-col justify-between items-center text-center shadow-sm hover:shadow-md transition">
             <div class="w-full flex flex-col items-center">
               <div class="h-16 flex items-center justify-center mb-2">${imgHTML}</div>
-              <h4 class="font-extrabold text-slate-800 text-xs leading-tight mb-1 min-h-[28px] line-clamp-2">${p.
-                                                                                                               
+              <h4 class="font-extrabold text-slate-800 text-xs leading-tight mb-1 min-h-[28px] line-clamp-2">${p.name}</h4>
+              <p class="text-[11px] text-slate-400 font-semibold mb-3">Stock: <span class="text-slate-700 font-bold">${p.stock}</span></p>
+            </div>
+            <div class="w-full flex justify-between items-center border-t border-slate-100 pt-3">
+              <span class="font-black text-blue-600 text-sm">$${p.price.toLocaleString()}</span>
+              <button onclick="addToCart(${p.id})" ${p.stock <= 0 ? 'disabled' : ''} class="w-8 h-8 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold flex items-center justify-center text-xs shadow-md transition disabled:opacity-30">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
+          </div>`;
+      });
+    }
+
+    function addToCart(productId) {
+      if (!activeUser) {
+        openSelectUserModal();
+        return;
+      }
+
+      const product = DB.products.find(p => p.id === productId);
+      const cartItem = cart.find(item => item.id === productId);
+      if (cartItem) {
+        if (cartItem.qty < product.stock) cartItem.qty++;
+        else alert('No hay suficiente stock disponible.');
+      } else {
+        cart.push({ id: product.id, name: product.name, price: product.price, qty: 1 });
+      }
+      renderCart();
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cart-items');
+      const totalEl = document.getElementById('cart-total');
+      const qtyEl = document.getElementById('cart-qty');
+
+      if (cart.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400 text-center py-16">Tu canasta está vacía.</p>';
+        totalEl.innerText = '$0';
+        qtyEl.innerText = '0';
+        return;
+      }
+
+      let total = 0, count = 0;
+      container.innerHTML = '';
+      cart.forEach((item, index) => {
+        const itemTotal = item.price * item.qty;
+        total += itemTotal;
+        count += item.qty;
+        container.innerHTML += `
+          <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+            <div>
+              <p class="text-xs font-bold text-slate-800">${item.name}</p>
+              <p class="text-[10px] text-slate-500">$${item.price} x ${item.qty}</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-black text-blue-600">$${itemTotal.toLocaleString()}</span>
+              <button onclick="removeFromCart(${index})" class="text-slate-400 hover:text-red-500 text-xs"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>`;
+      });
+
+      totalEl.innerText = `$${total.toLocaleString()}`;
+      qtyEl.innerText = count;
+    }
+
+    function removeFromCart(index) { cart.splice(index, 1); renderCart(); }
+    function clearCart() { cart = []; renderCart(); }
+
+    function requestCheckout() {
+      if (!activeUser) { openSelectUserModal(); return; }
+      if (cart.length === 0) { alert('Tu canasta está vacía.'); return; }
+      openPinModal('Autorizar Compra', `Ingresa el PIN de ${activeUser.name}`, (pin) => {
+        if (pin === activeUser.pin) executeCheckout();
+        else alert('PIN incorrecto.');
+      });
+    }
+
+    function executeCheckout() {
+      for (let item of cart) {
+        const prod = DB.products.find(p => p.id === item.id);
+        if (!prod || prod.stock < item.qty) {
+          alert(`Stock insuficiente de ${item.name}.`);
+          return;
+        }
+      }
+
+      let total = 0;
+      cart.forEach(item => {
+        const prod = DB.products.find(p => p.id === item.id);
+        prod.stock -= item.qty;
+        total += item.price * item.qty;
+      });
+
+      activeUser.debt += total;
+      DB.transactions.unshift({
+        id: Date.now(),
+        type: 'SALE',
+        userId: activeUser.id,
+        userName: activeUser.name,
+        amount: total,
+        date: new Date().toLocaleString()
+      });
+
+      cart = [];
+      saveDB();
+      alert('¡Compra guardada con éxito!');
+      closePinModal();
+    }
+
+    function openPinModal(title, subtitle, callback) {
+      document.getElementById('pin-modal-title').innerText = title;
+      document.getElementById('pin-modal-subtitle').innerText = subtitle;
+      document.getElementById('input-pin').value = '';
+      document.getElementById('modal-pin').classList.remove('hidden');
+      pinActionCallback = callback;
+    }
+
+    function closePinModal() {
+      document.getElementById('modal-pin').classList.add('hidden');
+      pinActionCallback = null;
+    }
+
+    document.getElementById('btn-confirm-pin').onclick = function() {
+      const pin = document.getElementById('input-pin').value;
+      if (pinActionCallback) pinActionCallback(pin);
+    };
+
+    function openProductModal() {
+      tempImageBase64 = '';
+      document.getElementById('prod-name').value = '';
+      document.getElementById('prod-stock').value = '';
+      document.getElementById('prod-cost').value = '';
+      document.getElementById('prod-price').value = '';
+      document.getElementById('prod-image-url').value = '';
+      document.getElementById('prod-image
