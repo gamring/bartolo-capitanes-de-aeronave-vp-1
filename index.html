@@ -13,31 +13,32 @@
 </head>
 <body class="bg-[#f1f5f9] text-slate-800 min-h-screen flex flex-col">
 
-  <!-- BARRA SUPERIOR -->
+  <!-- BARRA SUPERIOR FIEL A LA CAPTURA -->
   <header class="bg-[#0f172a] text-white border-b border-slate-800 sticky top-0 z-40 shadow-md">
     <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
       <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 text-base">
+        <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 text-lg">
           <i class="fa-solid fa-plane font-black"></i>
         </div>
         <div>
-          <h1 class="text-base font-bold text-amber-400 leading-tight">Bartolo capitanes aeronaves Vp-1</h1>
+          <h1 class="text-base md:text-lg font-bold text-amber-400 leading-tight">Bartolo capitanes aeronaves Vp-1</h1>
           <p class="text-[11px] text-slate-400">Punto de Autoatención y Confitería</p>
         </div>
       </div>
 
-      <div class="bg-slate-800/80 p-1 rounded-xl flex border border-slate-700">
-        <button id="btn-nav-client" onclick="switchView('client')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition bg-white text-slate-900 shadow">
-          <i class="fa-solid fa-cart-shopping mr-1 text-blue-600"></i> Autoatención
+      <!-- ALTERNANCIA DE VISTA -->
+      <div class="bg-slate-800 p-1 rounded-xl flex border border-slate-700">
+        <button id="btn-nav-client" onclick="switchView('client')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-white text-slate-900 shadow">
+          <i class="fa-solid fa-cart-shopping mr-1.5 text-blue-600"></i> Autoatención
         </button>
-        <button id="btn-nav-admin" onclick="switchView('admin')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-slate-200">
-          <i class="fa-solid fa-shield-halved mr-1"></i> Administración
+        <button id="btn-nav-admin" onclick="switchView('admin')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-slate-200">
+          <i class="fa-solid fa-shield-halved mr-1.5"></i> Administración
         </button>
       </div>
     </div>
   </header>
 
-  <!-- CONTENEDOR PRINCIPAL -->
+  <!-- CONTENIDO PRINCIPAL -->
   <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6">
 
     <!-- PERFIL AUTOATENCIÓN -->
@@ -46,6 +47,7 @@
       <!-- IZQUIERDA: IDENTIFICACIÓN Y PRODUCTOS -->
       <div class="lg:col-span-2 space-y-5">
         
+        <!-- TARJETA DE IDENTIFICACIÓN -->
         <div class="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-sm flex flex-wrap justify-between items-center gap-3">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-base">
@@ -61,24 +63,26 @@
           </div>
 
           <div class="flex items-center gap-2">
-            <button onclick="openSelectUserModal()" class="px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold rounded-xl text-xs transition flex items-center gap-1.5">
+            <button onclick="openSelectUserModal()" class="px-3.5 py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold rounded-xl text-xs transition flex items-center gap-1.5 border border-blue-100">
               <i class="fa-solid fa-user-check"></i> <span id="btn-select-user-text">Seleccionar Usuario</span>
             </button>
-            <button onclick="openRegisterUserModal()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition">
-              <i class="fa-solid fa-plus"></i> Crear
+            <button onclick="openRegisterUserModal()" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition">
+              <i class="fa-solid fa-user-plus"></i> Crear
             </button>
           </div>
         </div>
 
+        <!-- BUSCADOR -->
         <div class="relative">
           <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400 text-xs"></i>
           <input type="text" id="search-input" oninput="renderProducts()" placeholder="Buscar confitería, bebidas, snacks..." class="w-full bg-white border border-slate-200/90 rounded-2xl pl-10 pr-4 py-3 text-xs md:text-sm text-slate-800 focus:outline-none focus:border-blue-500 shadow-sm">
         </div>
 
+        <!-- GRID DE PRODUCTOS -->
         <div id="products-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
       </div>
 
-      <!-- DERECHA: CANASTA -->
+      <!-- DERECHA: CANASTA DEL DÍA -->
       <div class="lg:col-span-1">
         <div class="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-sm sticky top-20 flex flex-col justify-between min-h-[480px]">
           <div>
@@ -89,11 +93,13 @@
               <button onclick="clearCart()" class="text-[11px] text-red-500 font-semibold hover:underline">Vaciar</button>
             </div>
 
+            <!-- ITEMS EN CANASTA -->
             <div id="cart-items" class="space-y-3 max-h-[300px] overflow-y-auto pr-1">
               <p class="text-xs text-slate-400 text-center py-16">Tu canasta está vacía.</p>
             </div>
           </div>
 
+          <!-- TOTALES Y BOTÓN CONFIRMAR -->
           <div class="pt-4 border-t border-slate-100 space-y-3">
             <div class="flex justify-between text-xs text-slate-500">
               <span>Total Items:</span>
@@ -101,7 +107,7 @@
             </div>
             <div class="flex justify-between text-base font-extrabold text-slate-900">
               <span>Total a Cargar:</span>
-              <span id="cart-total" class="text-blue-600">$0</span>
+              <span id="cart-total" class="text-2xl font-black text-blue-600">$0</span>
             </div>
 
             <button onclick="requestCheckout()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-sm">
@@ -116,14 +122,14 @@
     <!-- PERFIL ADMINISTRACIÓN -->
     <div id="view-admin" class="hidden space-y-6">
       
-      <div class="flex flex-wrap justify-between items-center gap-4 bg-white p-4 rounded-2xl border border-slate-200/90 shadow-sm">
+      <div class="flex flex-wrap justify-between items-center gap-4 bg-white p-4 md:p-5 rounded-2xl border border-slate-200/90 shadow-sm">
         <div>
           <h2 class="font-extrabold text-slate-800 text-base">Panel de Control de Administración</h2>
-          <p class="text-xs text-slate-500">Gestión de stock, flujo de caja y reseteo de claves</p>
+          <p class="text-xs text-slate-500">Gestión de stock con fotos, costo/venta, saldos y flujo de caja</p>
         </div>
 
-        <div class="flex gap-2">
-          <button onclick="openProductModal()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3.5 py-2 rounded-xl text-xs flex items-center gap-1.5 transition">
+        <div class="flex flex-wrap gap-2">
+          <button onclick="openProductModal()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3.5 py-2 rounded-xl text-xs flex items-center gap-1.5 transition shadow">
             <i class="fa-solid fa-plus"></i> Ingresar Producto
           </button>
           <button onclick="changeAdminPin()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1 transition">
@@ -135,31 +141,32 @@
         </div>
       </div>
 
-      <!-- KPIS CAJA -->
+      <!-- KPIS FLUJO DE CAJA -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-sm">
           <p class="text-[11px] font-bold text-slate-400 uppercase">Ventas del Mes</p>
           <p class="text-2xl font-black text-slate-800 mt-1" id="kpi-month-sales">$0</p>
-          <span class="text-[10px] text-slate-400">Total acumulado en deudas</span>
+          <span class="text-[10px] text-slate-400">Total ventas acumuladas</span>
         </div>
         <div class="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-sm">
           <p class="text-[11px] font-bold text-slate-400 uppercase">Abonos Recibidos (Mes)</p>
           <p class="text-2xl font-black text-emerald-600 mt-1" id="kpi-month-payments">$0</p>
-          <span class="text-[10px] text-slate-400">Recaudación real ingresada</span>
+          <span class="text-[10px] text-slate-400">Recaudación real en efectivo/transferencia</span>
         </div>
         <div class="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-sm">
           <p class="text-[11px] font-bold text-slate-400 uppercase">Flujo Neto del Mes</p>
           <p class="text-2xl font-black text-blue-600 mt-1" id="kpi-month-net">$0</p>
-          <span class="text-[10px] text-slate-400">Abonos vs Compras del período</span>
+          <span class="text-[10px] text-slate-400">Abonos vs ventas del período</span>
         </div>
         <div class="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-sm">
           <p class="text-[11px] font-bold text-slate-400 uppercase">Deuda Total Pendiente</p>
           <p class="text-2xl font-black text-red-500 mt-1" id="kpi-total-debt">$0</p>
-          <span class="text-[10px] text-slate-400">Por cobrar entre usuarios</span>
+          <span class="text-[10px] text-slate-400">Saldo pendiente por cobrar</span>
         </div>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- CONTROL DE INVENTARIO -->
         <div class="lg:col-span-2 bg-white border border-slate-200/90 rounded-2xl p-5 shadow-sm">
           <h3 class="font-extrabold text-slate-800 text-sm mb-4 flex items-center gap-2">
             <i class="fa-solid fa-boxes-stacked text-blue-600"></i> Control de Stock e Inventario
@@ -182,14 +189,16 @@
           </div>
         </div>
 
+        <!-- CUENTAS Y SALDOS -->
         <div class="lg:col-span-1 bg-white border border-slate-200/90 rounded-2xl p-5 shadow-sm">
           <h3 class="font-extrabold text-slate-800 text-sm mb-4 flex items-center gap-2">
-            <i class="fa-solid fa-users text-blue-600"></i> Cuentas de Clientes
+            <i class="fa-solid fa-users text-blue-600"></i> Cuentas y Saldos
           </h3>
           <div id="admin-users-list" class="space-y-3 max-h-[400px] overflow-y-auto pr-1"></div>
         </div>
       </div>
 
+      <!-- HISTORIAL DE TRANSACCIONES -->
       <div class="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-sm">
         <h3 class="font-extrabold text-slate-800 text-sm mb-4 flex items-center gap-2">
           <i class="fa-solid fa-clock-rotate-left text-blue-600"></i> Historial de Compras y Abonos
@@ -201,7 +210,7 @@
                 <th class="p-3">Fecha y Hora</th>
                 <th class="p-3">Tipo</th>
                 <th class="p-3">Cliente</th>
-                <th class="p-3">Monto</th>
+                <th class="p-3">Monto Total</th>
               </tr>
             </thead>
             <tbody id="admin-history-table" class="divide-y divide-slate-100"></tbody>
@@ -371,8 +380,8 @@
             isAdmin = true;
             document.getElementById('view-client').classList.add('hidden');
             document.getElementById('view-admin').classList.remove('hidden');
-            document.getElementById('btn-nav-client').className = "px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-slate-200";
-            document.getElementById('btn-nav-admin').className = "px-3 py-1.5 rounded-lg text-xs font-bold transition bg-white text-slate-900 shadow";
+            document.getElementById('btn-nav-client').className = "px-3.5 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-slate-200";
+            document.getElementById('btn-nav-admin').className = "px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-white text-slate-900 shadow";
             closePinModal();
           } else alert('Clave de administración incorrecta.');
         });
@@ -380,8 +389,8 @@
         isAdmin = false;
         document.getElementById('view-admin').classList.add('hidden');
         document.getElementById('view-client').classList.remove('hidden');
-        document.getElementById('btn-nav-client').className = "px-3 py-1.5 rounded-lg text-xs font-bold transition bg-white text-slate-900 shadow";
-        document.getElementById('btn-nav-admin').className = "px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-slate-200";
+        document.getElementById('btn-nav-client').className = "px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-white text-slate-900 shadow";
+        document.getElementById('btn-nav-admin').className = "px-3.5 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-slate-200";
       }
     }
 
@@ -673,4 +682,126 @@
 
     function changeAdminPin() {
       const newPin = prompt('Nueva clave maestra de Administrador (4 dígitos):');
-      if (new
+      if (newPin && newPin.trim().length === 4) {
+        DB.adminPin = newPin.trim();
+        saveDB();
+        alert('Clave de Administrador actualizada.');
+      } else if (newPin !== null) alert('Debe ser de 4 dígitos.');
+    }
+
+    function registerPayment(userId) {
+      const user = DB.users.find(u => u.id === userId);
+      const amount = prompt(`Ingresa el monto abonado por ${user.name}:`);
+      const val = parseInt(amount);
+      if (val && val > 0) {
+        user.debt = Math.max(0, user.debt - val);
+        DB.transactions.unshift({
+          id: Date.now(),
+          type: 'PAYMENT',
+          userId: user.id,
+          userName: user.name,
+          amount: val,
+          date: new Date().toLocaleString()
+        });
+        saveDB();
+      }
+    }
+
+    function clearDebt(userId) {
+      const user = DB.users.find(u => u.id === userId);
+      if (confirm(`¿Marcar la cuenta de ${user.name} como pagada (Saldo $0)?`)) {
+        user.debt = 0;
+        saveDB();
+      }
+    }
+
+    function renderAdminTable() {
+      const tbody = document.getElementById('admin-inventory-table');
+      tbody.innerHTML = '';
+      DB.products.forEach(p => {
+        const margin = p.price - p.cost;
+        const isEmoji = !p.img.startsWith('data:') && !p.img.startsWith('http');
+        const imgHTML = isEmoji ? p.img : `<img src="${p.img}" class="w-8 h-8 object-cover rounded-lg">`;
+        
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50">
+            <td class="p-3">${imgHTML}</td>
+            <td class="p-3 font-bold text-slate-800">${p.name}</td>
+            <td class="p-3 font-semibold">${p.stock}</td>
+            <td class="p-3 text-slate-500">$${p.cost}</td>
+            <td class="p-3 font-bold text-blue-600">$${p.price}</td>
+            <td class="p-3 text-emerald-600 font-bold">+$${margin}</td>
+            <td class="p-3 text-right flex justify-end gap-2">
+              <button onclick="openProductModal(${p.id})" class="text-slate-400 hover:text-blue-600"><i class="fa-solid fa-pen-to-square"></i></button>
+              <button onclick="deleteProduct(${p.id})" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>`;
+      });
+    }
+
+    function renderAdminUsers() {
+      const container = document.getElementById('admin-users-list');
+      container.innerHTML = '';
+      DB.users.forEach(u => {
+        container.innerHTML += `
+          <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl flex justify-between items-center">
+            <div>
+              <p class="text-xs font-bold text-slate-800">${u.name}</p>
+              <p class="text-[11px] text-red-500 font-bold">Deuda: $${u.debt.toLocaleString()}</p>
+            </div>
+            <div class="flex gap-1">
+              <button onclick="resetUserPin(${u.id})" title="Resetear PIN" class="bg-amber-100 hover:bg-amber-200 text-amber-700 px-2 py-1 rounded-lg text-[10px] font-bold">
+                <i class="fa-solid fa-key"></i>
+              </button>
+              <button onclick="registerPayment(${u.id})" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-700 px-2 py-1 rounded-lg text-[10px] font-bold">Abonar</button>
+              <button onclick="clearDebt(${u.id})" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-2 py-1 rounded-lg text-[10px] font-bold">Saldo $0</button>
+            </div>
+          </div>`;
+      });
+    }
+
+    function renderHistoryTable() {
+      const tbody = document.getElementById('admin-history-table');
+      tbody.innerHTML = '';
+      if (DB.transactions.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-slate-400">Sin historial registrado.</td></tr>';
+        return;
+      }
+      DB.transactions.slice(0, 15).forEach(t => {
+        const isSale = t.type === 'SALE';
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50">
+            <td class="p-3 text-slate-500">${t.date}</td>
+            <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${isSale ? 'bg-red-100 text-red-600' : 'bg-emerald-100 text-emerald-700'}">${isSale ? 'COMPRA' : 'ABONO'}</span></td>
+            <td class="p-3 font-bold text-slate-800">${t.userName}</td>
+            <td class="p-3 font-bold ${isSale ? 'text-blue-600' : 'text-emerald-600'}">$${t.amount.toLocaleString()}</td>
+          </tr>`;
+      });
+    }
+
+    function renderKPIs() {
+      let monthSales = 0, monthPayments = 0, totalDebt = 0;
+      DB.transactions.forEach(t => {
+        if (t.type === 'SALE') monthSales += t.amount;
+        if (t.type === 'PAYMENT') monthPayments += t.amount;
+      });
+      DB.users.forEach(u => totalDebt += u.debt);
+
+      document.getElementById('kpi-month-sales').innerText = `$${monthSales.toLocaleString()}`;
+      document.getElementById('kpi-month-payments').innerText = `$${monthPayments.toLocaleString()}`;
+      document.getElementById('kpi-month-net').innerText = `$${(monthPayments - monthSales).toLocaleString()}`;
+      document.getElementById('kpi-total-debt').innerText = `$${totalDebt.toLocaleString()}`;
+    }
+
+    function exportToCSV() {
+      let csv = 'Usuario,Deuda Acumulada\n';
+      DB.users.forEach(u => { csv += `"${u.name}",${u.debt}\n`; });
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `reporte_bartolo_vp1_${new Date().toISOString().slice(0,10)}.csv`;
+      link.click();
+    }
+  </script>
+</body>
+</html>
