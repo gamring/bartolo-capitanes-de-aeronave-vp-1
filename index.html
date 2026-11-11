@@ -364,7 +364,8 @@
     }
 
     window.onload = function() {
-      document.getElementById('search-input').value = '';
+      const searchBox = document.getElementById('search-input');
+      if (searchBox) searchBox.value = '';
       syncActiveUser();
       renderAll();
     };
@@ -440,7 +441,8 @@
 
     function renderProducts() {
       const grid = document.getElementById('products-grid');
-      const query = document.getElementById('search-input').value.toLowerCase().trim();
+      const searchBox = document.getElementById('search-input');
+      const query = searchBox ? searchBox.value.toLowerCase().trim() : '';
       grid.innerHTML = '';
 
       const filtered = DB.products.filter(p => p.name.toLowerCase().includes(query));
